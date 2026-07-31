@@ -59,7 +59,7 @@ export default function Header() {
         <div className="container m-auto flex justify-between items-center">
           {/* Logo */}
           <div className="logo flex justify-center items-center">
-            <button className="md:hidden lg:hidden sm:block cursor-pointer">
+            <button className="md:hidden lg:hidden sm:block cursor-pointer dark:text-white">
               <FiMenu className="w-10 text-2xl" />
             </button>
             <a href="/" className="flex gap-2">
