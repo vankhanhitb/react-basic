@@ -2,6 +2,7 @@ import Logo from "../../assets/logo.png";
 import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaCaretDown } from "react-icons/fa";
+import { FiMenu } from "react-icons/fi";
 import DarkMode from "./DarkMode";
 
 const Menus = [
@@ -57,7 +58,10 @@ export default function Header() {
       <div className="bg-primary/40 py-2">
         <div className="container m-auto flex justify-between items-center">
           {/* Logo */}
-          <div className="logo">
+          <div className="logo flex justify-center items-center">
+            <button className="md:hidden lg:hidden sm:block cursor-pointer">
+              <FiMenu className="w-10 text-2xl" />
+            </button>
             <a href="/" className="flex gap-2">
               <img src={Logo} alt="Logo" className="w-10" />
               <span className="font-bold sm:text-3xl text-2xl uppercase">BiShop</span>
@@ -90,7 +94,7 @@ export default function Header() {
       </div>
       {/* Menus */}
       <div className="flex justify-center mt-3">
-        <ul className="sm:flex hide items-center gap-4">
+        <ul className="justify-center items-center gap-4 hidden md:flex">
             {
               Menus.map((item) => (
                 <li key={item.id}>
