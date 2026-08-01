@@ -3,7 +3,7 @@ import {
   BasicTee61,
   BasicTee62,
   BasicTee63,
-  BasicTee64
+  BasicTee64,
 } from "../assets/products/BasicTee";
 
 import {
@@ -14,34 +14,34 @@ import {
 
 import {
   StripeBeanieBrown102,
-  StripeBeanieBrown103
+  StripeBeanieBrown103,
 } from "../assets/products/StripeBeanieBrown";
 
 import {
   CuffedShortsKhaki131,
   CuffedShortsKhaki132,
   CuffedShortsKhaki133,
-  CuffedShortsKhaki134
+  CuffedShortsKhaki134,
 } from "../assets/products/CuffedShortsKhaki";
 
 import {
   LeatherSandalsBrown110,
   LeatherSandalsBrown111,
   LeatherSandalsBrown112,
-  LeatherSandalsBrown113
+  LeatherSandalsBrown113,
 } from "../assets/products/LeatherSandalsBrown";
 
 import {
   FloralKnitMint84,
   FloralKnitMint85,
   FloralKnitMint86,
-  FloralKnitMint87
+  FloralKnitMint87,
 } from "../assets/products/FloralKnitMint";
 
 import {
   WaveKnitTop65,
   WaveKnitTop66,
-  WaveKnitTop67
+  WaveKnitTop67,
 } from "../assets/products/WaveKnitTop";
 
 import {
@@ -55,7 +55,7 @@ import {
   LogoPoloRed121,
   LogoPoloRed122,
   LogoPoloRed123,
-  LogoPoloRed124
+  LogoPoloRed124,
 } from "../assets/products/LogoPoloRed";
 
 import {
@@ -81,46 +81,46 @@ import {
 import {
   CottonPoloGreen161,
   CottonPoloGreen162,
-  CottonPoloGreen163
+  CottonPoloGreen163,
 } from "../assets/products/CottonPoloGreen";
 
 import {
   PocketVest42,
   PocketVest43,
-  PocketVest44
+  PocketVest44,
 } from "../assets/products/PocketVest";
 
 import {
   DenimCollarTop19,
   DenimCollarTop20,
-  DenimCollarTop21
+  DenimCollarTop21,
 } from "../assets/products/DenimCollarTop";
 
 import {
   StripePoloPink34,
   StripePoloPink35,
   StripePoloPink36,
-  StripePoloPink37
+  StripePoloPink37,
 } from "../assets/products/StripePoloPink";
 
 import {
   StripeShorts207,
   StripeShorts208,
   StripeShorts209,
-  StripeShorts210
+  StripeShorts210,
 } from "../assets/products/StripeShorts";
 
 import {
   DenimShortsBlue13,
   DenimShortsBlue14,
   DenimShortsBlue15,
-  DenimShortsBlue16
+  DenimShortsBlue16,
 } from "../assets/products/DenimShortsBlue";
 
 import {
   CanvasSneaker203,
   CanvasSneaker204,
-  CanvasSneaker205
+  CanvasSneaker205,
 } from "../assets/products/CanvasSneaker";
 
 type Color = {
@@ -135,6 +135,13 @@ type Size = {
 
 type Image = {
   src: string
+}
+type Tag = {
+  name: string,
+}
+
+type Badges = {
+  name: string
 }
 
 export type productType = {
@@ -152,7 +159,11 @@ export type productType = {
   images?: {
     featuredImage?: string,
     gallery?: Image[]
-  }
+  },
+  avalable?: boolean,
+  tag?: Tag[],
+  featured?: boolean,
+  badges?: Badges[],
 }
 
 export const productDatas: productType[] = [
@@ -184,7 +195,16 @@ export const productDatas: productType[] = [
         {src: BasicTee63},
         {src: BasicTee64},
       ]
-    }
+    },
+    avalable:true,
+    tag: [
+      {name: "Children"},
+      {name: "Autum"},
+    ],
+    featured: true,
+    badges: [
+      {name: "new"}
+    ]
   },
   {
     productId: 2,
@@ -212,7 +232,16 @@ export const productDatas: productType[] = [
         {src: FleeceHoodieKids193},
         {src: FleeceHoodieKids194},
       ]
-    }
+    },
+    avalable:true,
+    tag: [
+      {name: "Children"},
+      {name: "Summer"},
+    ],
+    featured: true,
+    badges: [
+      {name: "Hot"}
+    ]
   },
   {
     productId: 3,
@@ -238,7 +267,16 @@ export const productDatas: productType[] = [
         {src: StripeBeanieBrown102},
         {src: StripeBeanieBrown103},
       ]
-    }
+    },
+    avalable:true,
+    tag: [
+      {name: "Children"},
+      {name: "Summer"},
+    ],
+    featured: true,
+    badges: [
+      {name: "New Arrive"}
+    ]
   },
   {
     productId: 4,
