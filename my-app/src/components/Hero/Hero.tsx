@@ -1,6 +1,6 @@
 import { useRef } from 'react'
-import type { Swiper as SwiperType } from "swiper";
 
+import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y, Autoplay, Pagination, Navigation } from "swiper/modules";
 
@@ -227,13 +227,25 @@ export default function Hero({
           h-[520px]
           md:h-[620px]
           lg:h-[720px]
-          [&_.swiper-pagination-bullet]:h-2
-          [&_.swiper-pagination-bullet]:w-2
-          [&_.swiper-pagination-bullet]:bg-white
+          [&_.swiper-pagination-bullet]:h-4!
+          [&_.swiper-pagination-bullet]:w-4!
+          [&_.swiper-pagination-bullet]:bg-white!
           [&_.swiper-pagination-bullet]:opacity-50
           [&_.swiper-pagination-bullet-active]:w-8
           [&_.swiper-pagination-bullet-active]:rounded-full
           [&_.swiper-pagination-bullet-active]:opacity-100
+          [&_.swiper-button-prev]:left-auto!
+          [&_.swiper-button-prev]:right-16!
+          [&_.swiper-button-prev]:top-auto!
+          [&_.swiper-button-prev]:bottom-6!
+          [&_.swiper-button-prev]:size-8!
+          [&_.swiper-button-prev]:text-white!
+
+          [&_.swiper-button-next]:right-6!
+          [&_.swiper-button-next]:top-auto!
+          [&_.swiper-button-next]:bottom-6!
+          [&_.swiper-button-next]:size-8!
+          [&_.swiper-button-next]:text-white!
         "
       >
         {slides.map((slide, index) => (
