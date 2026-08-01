@@ -1,7 +1,16 @@
-import React from 'react'
+import React from 'react';
+import { productDatas } from "../../data/products";
 
 export default function ProductList() {
   return (
-    <div>ProductList</div>
+    <div>
+      {
+        productDatas.map((product) => (
+          <div key={product.productId}>
+            {/* <img src={product.images?.featuredImage} alt="" /> */}
+          </div>
+        ))
+      }
+    </div>
   )
 }
