@@ -54,7 +54,7 @@ function prepareSlide(slide: HTMLElement) {
     button
   ])
 
-  //Eyebrow come from donw to up
+  //Eyebrow come from down to up
   gsap.set(eyebrow, {
     y: 24,
     x: 0,
@@ -76,7 +76,7 @@ function prepareSlide(slide: HTMLElement) {
   });
 }
 
-export default function Hero({
+export default function HeroSlider({
   slides = heroSlides
 }: HeroSlideshowProps) {
   
@@ -262,7 +262,7 @@ export default function Hero({
               <div className="absolute inset-0 bg-linear-to-r from-black/60 via-black/40 to-transparent" />
 
               {/* Content */}
-              <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6 md:px-10 lg:px-12">
+              <div className="relative z-10 mx-auto flex h-full container items-center px-6 md:px-10 lg:px-12">
                 <div className="max-w-2xl text-white">
                   <p
                     data-hero-eyebrow

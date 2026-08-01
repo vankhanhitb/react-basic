@@ -6,4 +6,6 @@
  * Swiper Slide
  */
 
- 
+ @theme {
+  --color-primary: #fb923c;
+ }
