@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { productsData, type productType } from "../../data/products";
 import Container from "../Container";
-import Card from "../Card";
-import { formattedPrice } from "../../ulti/formatPrice";
+import ProductCard from "../ProductCard";
 
 import { A11y } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -62,36 +61,7 @@ export default function ProductList() {
         {
           product.map((product) => (
             <SwiperSlide key={product.productId}>
-              <Card className="product-card flex flex-col gap-4">
-                <div className="product-card__image w-full rounded-2xl overflow-hidden">
-                  <img 
-                    src={product.images?.featuredImage} 
-                    alt="Product Image" 
-                    className="object-contain"
-                  />
-                </div>
-                <div className="flex flex-col justify-start gap-2">
-                  {product.categories &&
-                    <div className="product-card__tag flex gap-2">
-                        {
-                         product.categories?.map((item) => (
-                           <span className="px-1 py-.5 text-sm text-gray-500 font-600 border border-gray-200 rounded-[10px]">{item.name}</span>
-                         ))
-                        }
-                    </div>
-                  }
-                  <h2 className="product-card__title text-2xl font-600">{product.name}</h2>
-                  <div className="product-card__price">
-                    {
-                      product.price.onSalePrice ? 
-                      <><span className="text-2 text-red-600 font-600">{ formattedPrice(product.price.onSalePrice) }</span> <span className="text-gray-400 italic line-through">{formattedPrice(product.price.salePrice)}</span></>
-                      :
-                      <span className="text-2 font-600">{formattedPrice(product.price.salePrice)}</span>
-                    }
-                  </div>
-                  
-                </div>
-              </Card>
+              <ProductCard product={product} className="product-card flex-col gap-4" />
             </SwiperSlide>
           ))
         }

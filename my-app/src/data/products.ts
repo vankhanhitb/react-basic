@@ -249,7 +249,8 @@ export const productsData: productType[] = [
     ],
     featured: true,
     badges: [
-      {name: "Hot"}
+      {name: "Hot"},
+      {name: "New"}
     ],
     categories: [
       {name: "Accessories"},
