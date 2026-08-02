@@ -5,8 +5,8 @@ type PropsType = {
 }
 export default function Container({children}: PropsType) {
   return (
-    <>
+    <div className="container m-auto px-3.75">
       {children}
-    </>
+    </div>
   )
 }

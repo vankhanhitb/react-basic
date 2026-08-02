@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import Logo from "../../assets/logo.png";
 import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
@@ -52,10 +53,35 @@ const DropdownLinks = [
 ];
 
 export default function Header() {
+  const [sticky, setSticky] = useState(false);
+  const stickyRef = useRef(null);
+
+  useEffect(() => {
+    const setStateSticky = () => {
+      const handleScroll = () => {
+        if (window.scrollY > 0) {
+          setSticky(true);
+        } else {
+          setSticky(false);
+        }
+      };
+
+      window.addEventListener("scroll", handleScroll, { passive: true });
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+    setStateSticky();
+  }, [sticky])
+
   return (
-    <div className="shadow-md bg-white dark:bg-gray-900 dark:text-white duration-200 relative z-40">
+    <div 
+      ref={stickyRef} 
+      className="shadow-md bg-white dark:bg-gray-900 dark:text-white duration-200 sticky top-0 z-40"
+    >
       {/* Top Navbar */}
-      <div className="bg-primary/40 py-2">
+      <div className={`bg-primary/40 py-2 transition-all duration-150 ${sticky ? "opacity-0 unvisible h-0 pointer-events-none": "opacity-100"}`}>
         <div className="container m-auto flex justify-between items-center">
           {/* Logo */}
           <div className="logo flex justify-center items-center">
@@ -100,7 +126,7 @@ export default function Header() {
                 <li key={item.id}>
                     <a 
                       href={item.link}
-                      className="inline-block px-4 hover-text-primary duration-200"
+                      className="inline-block px-4 py-3 hover-text-primary duration-200 text-[16px] uppercase"
                     >
                       {item.name}
                     </a>
@@ -109,7 +135,7 @@ export default function Header() {
             }
             {/* Dropdown */}
             <li className="group relative cursor-pointer">
-              <a href="#" className="flex items-center gap-0.5 py-2">
+              <a href="#" className="flex items-center gap-0.5 text-[16px] uppercase py-3">
                 Trending Products 
                 <span>
                   <FaCaretDown className="transition-all duration-200 group-hover:rotate-180" />
@@ -121,7 +147,7 @@ export default function Header() {
                     DropdownLinks.map((item)=>(
                       <li key={item.id}>
                         <a href={item.link}
-                          className="inline-block w-full rounded-md p-2 hover:bg-primary/20"
+                          className="inline-block w-full text-sm uppercase rounded-md p-2 hover:bg-primary/20"
                         >
                           {item.name}
                         </a>

@@ -144,6 +144,10 @@ type Badges = {
   name: string
 }
 
+type Category = {
+  name: string
+}
+
 export type productType = {
   productId: number,
   name: string,
@@ -164,9 +168,10 @@ export type productType = {
   tag?: Tag[],
   featured?: boolean,
   badges?: Badges[],
+  categories?: Category[],
 }
 
-export const productDatas: productType[] = [
+export const productsData: productType[] = [
   {
     productId: 1,
     name: "Basic Tee",
@@ -204,6 +209,10 @@ export const productDatas: productType[] = [
     featured: true,
     badges: [
       {name: "new"}
+    ],
+    categories: [
+      {name: "Accessories"},
+      {name: "Outerwear"}
     ]
   },
   {
@@ -241,6 +250,10 @@ export const productDatas: productType[] = [
     featured: true,
     badges: [
       {name: "Hot"}
+    ],
+    categories: [
+      {name: "Accessories"},
+      {name: "Outerwear"},
     ]
   },
   {
@@ -276,6 +289,10 @@ export const productDatas: productType[] = [
     featured: true,
     badges: [
       {name: "New Arrive"}
+    ],
+    categories: [
+      {name: "Accessories"},
+      {name: "Outerwear"},
     ]
   },
   {
@@ -303,7 +320,11 @@ export const productDatas: productType[] = [
         {src: CuffedShortsKhaki133},
         {src: CuffedShortsKhaki134},
       ]
-    }
+    },
+    categories: [
+      {name: "Accessories"},
+      {name: "Sets"},
+    ]
   },
   {
     productId: 5,
@@ -330,7 +351,12 @@ export const productDatas: productType[] = [
         {src: LeatherSandalsBrown112},
         {src: LeatherSandalsBrown113},
       ]
-    }
+    },
+    categories: [
+      {name: "Outerwear"},
+      {name: "Sets"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 6,
@@ -358,7 +384,12 @@ export const productDatas: productType[] = [
         {src: FloralKnitMint86},
         {src: FloralKnitMint87},
       ]
-    }
+    },
+    categories: [
+      {name: "Outerwear"},
+      {name: "Pants"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 7,
@@ -384,7 +415,12 @@ export const productDatas: productType[] = [
         {src: WaveKnitTop66},
         {src: WaveKnitTop67},
       ]
-    }
+    },
+    categories: [
+      {name: "Accessories"},
+      {name: "Pants"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 8,
@@ -411,7 +447,11 @@ export const productDatas: productType[] = [
         {src: SneakersGreen116},
         {src: SneakersGreen117},
       ]
-    }
+    },
+    categories: [
+      {name: "Pants"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 9,
@@ -438,7 +478,11 @@ export const productDatas: productType[] = [
         {src: LogoPoloRed123},
         {src: LogoPoloRed124},
       ]
-    }
+    },
+    categories: [
+      {name: "sweaters"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 10,
@@ -465,7 +509,11 @@ export const productDatas: productType[] = [
         {src: SleevelessTopYellow217},
         {src: SleevelessTopYellow218},
       ]
-    }
+    },
+    categories: [
+      {name: "sweaters"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 11,
@@ -492,7 +540,12 @@ export const productDatas: productType[] = [
         {src: StripedKnitBag100},
         {src: StripedKnitBag101},
       ]
-    }
+    },
+    categories: [
+      {name: "Outerwear"},
+      {name: "Sets"},
+      {name: "T-Shirts"}
+    ]
   },
   {
     productId: 12,
@@ -519,7 +572,12 @@ export const productDatas: productType[] = [
         {src: BucketHatGreen108},
         {src: BucketHatGreen109},
       ]
-    }
+    },
+    categories: [
+      {name: "Outerwear"},
+      {name: "Sets"},
+      {name: "T-Shirts"}
+    ]
   },
   {
     productId: 13,
@@ -547,7 +605,12 @@ export const productDatas: productType[] = [
         {src: CottonPoloGreen162},
         {src: CottonPoloGreen163}
       ]
-    }
+    },
+    categories: [
+      {name: "Outerwear"},
+      {name: "Sets"},
+      {name: "T-Shirts"}
+    ]
   },
   {
     productId: 14,
@@ -574,7 +637,12 @@ export const productDatas: productType[] = [
         {src: PocketVest43},
         {src: PocketVest44}
       ]
-    }
+    },
+    categories: [
+      {name: "Outerwear"},
+      {name: "Sets"},
+      {name: "T-Shirts"}
+    ]
   },
   {
     productId: 15,
@@ -600,7 +668,12 @@ export const productDatas: productType[] = [
         {src: DenimCollarTop20},
         {src: DenimCollarTop21}
       ]
-    }
+    },
+    categories: [
+      {name: "Accessories"},
+      {name: "Sets"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 16,
@@ -629,7 +702,12 @@ export const productDatas: productType[] = [
         {src: StripePoloPink36},
         {src: StripePoloPink37},
       ]
-    }
+    },
+    categories: [
+      {name: "Accessories"},
+      {name: "Sets"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 17,
@@ -658,7 +736,12 @@ export const productDatas: productType[] = [
         {src: StripeShorts209},
         {src: StripeShorts210},
       ]
-    }
+    },
+    categories: [
+      {name: "Accessories"},
+      {name: "Sets"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 18,
@@ -686,7 +769,12 @@ export const productDatas: productType[] = [
         {src: DenimShortsBlue15},
         {src: DenimShortsBlue16},
       ]
-    }
+    },
+    categories: [
+      {name: "Accessories"},
+      {name: "Sets"},
+      {name: "Shirts"}
+    ]
   },
   {
     productId: 19,
@@ -713,7 +801,12 @@ export const productDatas: productType[] = [
         {src: CanvasSneaker204},
         {src: CanvasSneaker205},
       ]
-    }
+    },
+    categories: [
+      {name: "Accessories"},
+      {name: "Sets"},
+      {name: "Shirts"}
+    ]
   }
 
 ]
