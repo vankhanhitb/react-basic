@@ -61,7 +61,7 @@ export default function ProductList() {
         {
           product.map((product) => (
             <SwiperSlide key={product.productId}>
-              <ProductCard product={product} className="product-card flex-col gap-4" />
+              <ProductCard key={product.name} product={product} className="product-card flex-col gap-4" />
             </SwiperSlide>
           ))
         }

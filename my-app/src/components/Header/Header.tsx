@@ -1,4 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
+
 import Logo from "../../assets/logo.png";
 import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
@@ -55,6 +58,7 @@ const DropdownLinks = [
 export default function Header() {
   const [sticky, setSticky] = useState(false);
   const stickyRef = useRef(null);
+  const itemCount = useSelector((state: RootState) => state.cart.item_count)
 
   useEffect(() => {
     const setStateSticky = () => {
@@ -109,7 +113,7 @@ export default function Header() {
             className="relative bg-linear-to-r from-primary to-secondary transition-all duration-20 py-1 px-4 rounded-full flex items-center gap-3 group"
             >
               <FaCartShopping className="relative z-2 text-xl drop-shadow-sm cursor-pointer" />
-              <span className="min-w-5 text-[12px] absolute z-3 top-0 right-0.5 text-white border-gray-300 rounded-full transition-all duration-200 bg-amber-500">0</span>
+              <span className="min-w-5 text-[12px] absolute z-3 top-0 right-0.5 text-white border-gray-300 rounded-full transition-all duration-200 bg-amber-500">{itemCount ? itemCount : 0}</span>
             </button>
             {/* Darkmode Switch */}
             <div>
