@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { productType } from "../data/products";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../features/cart/cartSlice";
+import { showModal } from "../features/cart/modalSlide";
 
 import { formattedPrice } from "../ulti/formatPrice";
 import { FiHeart, FiShoppingCart, FiSearch, FiRefreshCw } from "react-icons/fi";
@@ -20,6 +21,7 @@ export default function ProductCard ({ className, product }: PropType) {
     dispatch(addToCart(product));
     setInterval(()=>{
       setLoading(false);
+      dispatch(showModal({isOpen: true}))
     },1000)
   }
 

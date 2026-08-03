@@ -1,11 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { productType } from "../../data/products";
 
-type CartItem = Omit<productType, "quantity"> & {
+type CartItem = productType & {
   quantity: number;
 }
 
-type CartState = {
+export type CartState = {
   items: CartItem[];
   total_price: number;
   item_count: number;
@@ -44,20 +44,6 @@ export const cartSlice = createSlice({
       state.total_price = state.items.reduce((total, item) => {
         return total + Number(item.price.salePrice ?? item.price.onSalePrice)*item.quantity;
       }, 0)
-
-      console.log(state);
-      console.log(action);
-      // state.items.filter((item) => {
-      //   if(item.productId === product.productId){
-      //     item.quantity += 1;
-      //   }else{
-      //     state.items.push(product);
-      //   }
-      // })
-      // state.item_count= state.items.length;
-      // state.total_price += Number(
-      //   (product.price.onSalePrice*product.quantity) ?? (product.price.salePrice*product.quantity)
-      // )
     },
     // removeItem: (state, action: PayloadAction<productType>) => {
     //   console.log(state);

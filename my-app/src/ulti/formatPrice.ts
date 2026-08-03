@@ -1,5 +1,5 @@
-export function formattedPrice (amount: string){
-  const price = parseInt(amount);
+export function formattedPrice (amount){
+  const price = typeof(amount) === "string" ? parseInt(amount) : amount;
   return new Number(price).toLocaleString("en-US", {
     currency: "USD",
     style: "currency",
