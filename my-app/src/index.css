@@ -7,8 +7,9 @@
  */
 
  @theme {
-  --color-primary: #fb923c;
+  --color-primary: #fea928;
   --color-card-primary: #EDF1F4;
+  --color-secondary: #ed8900;
   --font-2: 20px;
   --font-1/\.5\/: 15px;
  }

@@ -1,4 +1,7 @@
 import React from 'react';
+import { updateCart } from "../features/cart/cartSlice";
+import { useDispatch } from "react-redux";
+
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 import { type CartState } from "../features/cart/cartSlice";
 import { formattedPrice } from "../ulti/formatPrice";
@@ -13,6 +16,16 @@ type Price= {
 }
 
 function CartModal({ cartData }: cartProps) {
+  const dispatch = useDispatch();
+
+  const handleClick = (productId:number, status: string) => {
+    const payload= {
+      productId: productId,
+      type: status
+    }
+    dispatch(updateCart(payload))
+  }
+  
   console.log(cartData);
 
   const Price = (price: Price) => {
@@ -45,13 +58,15 @@ function CartModal({ cartData }: cartProps) {
                     {Price( product.price )}
                   </div>
                   <div className="cart-drawer__line-item--quantity flex justify-start gap-3 items-center flex-1">
-                    <button 
+                    <button
+                      onClick={() => handleClick(product.productId, "increase")}
                       className="text-xl cursor-pointer"
                     >
                       <FiPlusCircle />
                     </button>
                     <span>{product.quantity}</span>
-                    <button 
+                    <button
+                      onClick={() => handleClick(product.productId, "minus")}
                       className="text-xl cursor-pointer"
                     >
                       <FiMinusCircle />
