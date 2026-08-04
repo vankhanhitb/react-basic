@@ -21,8 +21,8 @@ export default function ProductCard ({ className, product }: PropType) {
     dispatch(addToCart(product));
     setInterval(()=>{
       setLoading(false);
-      dispatch(showModal({isOpen: true}))
     },1000)
+    dispatch(showModal())
   }
 
   return (

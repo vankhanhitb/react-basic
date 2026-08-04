@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { showModal } from "../../features/cart/modalSlide";
 import type { RootState } from "../../store/store";
 
 import Logo from "../../assets/logo.png";
@@ -59,6 +60,7 @@ export default function Header() {
   const [sticky, setSticky] = useState(false);
   const stickyRef = useRef(null);
   const itemCount = useSelector((state: RootState) => state.cart.item_count)
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const setStateSticky = () => {
@@ -110,6 +112,7 @@ export default function Header() {
             </div>
             {/* Order Button */}
             <button
+            onClick={() => dispatch(showModal())}
             className="relative bg-linear-to-r from-primary to-secondary transition-all duration-20 py-1 px-4 rounded-full flex items-center gap-3 group"
             >
               <FaCartShopping className="relative z-2 text-xl drop-shadow-sm cursor-pointer" />

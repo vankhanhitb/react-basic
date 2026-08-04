@@ -37,13 +37,7 @@ export const cartSlice = createSlice({
         })
       }
 
-      state.item_count = state.items.reduce((count, item) => {
-        return count + item.quantity;
-      }, 0)
-
-      state.total_price = state.items.reduce((total, item) => {
-        return total + Number(item.price.salePrice ?? item.price.onSalePrice)*item.quantity;
-      }, 0)
+      updateCartPrice(state);
     },
     updateCart: (state, action: PayloadAction<{productId: number, type: string}>) => {
       const { productId, type } = action.payload;
@@ -68,58 +62,27 @@ export const cartSlice = createSlice({
         }
       }
 
-      state.item_count = state.items.reduce(
-        (count, item) => count + item.quantity,
-        0,
-      );
-
-      state.total_price = state.items.reduce(
-        (total, item) =>
-          total +
-          Number(
-            item.price.onSalePrice ?? item.price.salePrice,
-          ) *
-            item.quantity,
-        0,
-      );
-
-      // switch(type){
-      //   case "increase":
-      //     state.items.filter((item) => {
-      //       return item.productId === productId ? item.quantity += 1 : "";
-      //     });
-
-      //     state.total_price = state.items.reduce((total, item) => {
-      //       return total + Number(item.price.salePrice ?? item.price.onSalePrice)*item.quantity;
-      //     }, 0)
-      //   break;
-
-      //   case "minus":
-      //     state.items.filter((item) => {
-      //       if(item.productId === productId && item.quantity > 1 ){
-      //         return item.quantity -= 1
-      //       }else if(item.productId === productId && item.quantity === 1 ){
-      //         return item.productId !== productId
-      //       }
-      //     })
-
-      //     state.item_count = state.items.reduce((count, item) => {
-      //       return count + item.quantity;
-      //     }, 0)
-
-      //     state.total_price = state.items.reduce((total, item) => {
-      //       return total + Number(item.price.salePrice ?? item.price.onSalePrice)*item.quantity;
-      //     }, 0)
-      //     console.log(state);
-      //   break;
-      // }
+      updateCartPrice(state);
     }
-
-    // resetCart: (state:initialType[]) => {
-    //   console.log(state);
-    // }
   }
 })
+
+const updateCartPrice = (state: CartState) => {
+  state.item_count = state.items.reduce(
+    (count, item) => count + item.quantity,
+    0,
+  );
+
+  state.total_price = state.items.reduce(
+    (total, item) =>
+      total +
+      Number(
+        item.price.onSalePrice ?? item.price.salePrice,
+      ) *
+        item.quantity,
+    0,
+  );
+}
 
 export const { addToCart, updateCart } = cartSlice.actions;
 export default cartSlice.reducer;

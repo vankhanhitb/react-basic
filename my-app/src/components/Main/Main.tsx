@@ -12,6 +12,7 @@ import CartModal from "../CartModal";
 export default function Main() {
   const cart = useSelector((state: RootState) => state.cart)
   const modalStatus = useSelector((state: RootState) => state.modal.isOpen)
+  console.log(modalStatus)
   return (
     <>
       <HeroSlider />
@@ -19,7 +20,7 @@ export default function Main() {
       <CollectionList />
       <Testimonials />
       <Subscribe />
-      {cart.item_count > 0 && modalStatus && <CartModal cartData={cart} />}
+      {modalStatus === true && <CartModal cartData={cart} />}
     </>
   )
 }
