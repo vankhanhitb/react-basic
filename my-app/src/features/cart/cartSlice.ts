@@ -79,7 +79,17 @@ export const cartSlice = createSlice({
       }
 
       updateCartPrice(state);
-    }
+    },
+    removeItem(state, action: PayloadAction<number>) {
+      const index = state.items.findIndex(
+        (item) => item.productId === action.payload,
+      );
+
+      if (index < 0) return;
+
+      state.items.splice(index, 1);
+      updateCartPrice(state);
+    },
   }
 })
 
@@ -100,5 +110,5 @@ const updateCartPrice = (state: CartState) => {
   );
 }
 
-export const { addToCart, updateCart, addToCartWithQuantity } = cartSlice.actions;
+export const { addToCart, updateCart, addToCartWithQuantity, removeItem } = cartSlice.actions;
 export default cartSlice.reducer;

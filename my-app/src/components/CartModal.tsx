@@ -1,9 +1,9 @@
 import React from 'react';
-import { updateCart } from "../features/cart/cartSlice";
+import { updateCart, removeItem } from "../features/cart/cartSlice";
 import { closeModal } from "../features/cart/modalSlide";
 import { useDispatch } from "react-redux";
 
-import { FiPlusCircle, FiMinusCircle, FiXCircle, FiShoppingCart } from "react-icons/fi";
+import { FiPlusCircle, FiMinusCircle, FiXCircle, FiShoppingCart, FiX } from "react-icons/fi";
 import { type CartState } from "../features/cart/cartSlice";
 import { formattedPrice } from "../ulti/formatPrice";
 
@@ -25,6 +25,10 @@ function CartModal({ cartData }: cartProps) {
       type: status
     }
     dispatch(updateCart(payload))
+  }
+
+  const removeLineItem = (productId: number) => {
+    dispatch(removeItem(productId))
   }
 
   const Price = (price: Price) => {
@@ -55,10 +59,10 @@ function CartModal({ cartData }: cartProps) {
         </button>
         {cartData && cartData.items.length > 0 ?
           (
-            <>
+            <div className="flex flex-col flex-1">
               <div className="cart-drawer__top flex-1">
                 <h2 className="mb-10 text-2xl capitalize text-black font-700 border-b border-gray-200 pb-2">Cart Drawer</h2>
-                <div className="cart-drawer__items overflow-y-scroll max-h-150 h-full">
+                <div className="cart-drawer__items overflow-y-scroll max-h-180 h-full">
                   {
                     cartData.items.map((product, index) => (
                       <div key={index} className="cart-drawer__line-item flex justify-start flex-row gap-2 not-last:border-b border-gray-200 not-first:pt-6 pb-6">
@@ -70,28 +74,43 @@ function CartModal({ cartData }: cartProps) {
                           <div className="cart-drawer__line-item--info-price">
                             {Price( product.price )}
                           </div>
-                          <div className="cart-drawer__line-item--quantity flex justify-start gap-3 items-center flex-1">
+                          <div className="cart-drawer__line-item--quantity flex justify-start gap-3 items-end flex-1">
                             <button
                               onClick={() => handleClick(product.productId, "increase")}
-                              className="text-xl cursor-pointer"
+                              className="text-2xl cursor-pointer"
                             >
                               <FiPlusCircle />
                             </button>
                             <span>{product.quantity}</span>
                             <button
                               onClick={() => handleClick(product.productId, "minus")}
-                              className="text-xl cursor-pointer"
+                              className="text-2xl cursor-pointer"
                             >
                               <FiMinusCircle />
                             </button>
                           </div>
                         </div>
-                        <div className="cart-drawer__subtotal">
+                        <div className="cart-drawer__subtotal flex flex-col justify-between items-end">
                           <span className="">
                             {formattedPrice(
                               Number(product.price.onSalePrice ?? product.price.salePrice) * product.quantity,
                             )}
                           </span>
+                          <button
+                            onClick={() => removeLineItem(product.productId)}
+                            className="
+                            w-auto h-5 
+                            py-1 px-2 
+                            text-right 
+                            flex justify-center items-center gap-1 
+                            text-sm 
+                            bg-red-800
+                            text-white
+                            border rounded-sm 
+                            cursor-pointer"
+                          >
+                            <FiX />
+                          </button>
                         </div>
                       </div>
                     ))
@@ -102,7 +121,7 @@ function CartModal({ cartData }: cartProps) {
                 <h3 className="text-2xl">Total:</h3>
                 <span className="text-2xl font-bold">{formattedPrice(cartData.total_price)}</span>
               </div>
-            </>
+            </div>
           ) :
           (
             <div className="w-full h-full flex flex-col justify-center items-center content-center text-2xl font-bold text-center">

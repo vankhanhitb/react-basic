@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from "react-redux";
 import { addToCartWithQuantity } from "../../features/cart/cartSlice";
+import { showModal } from "../../features/cart/modalSlide";
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from "swiper";
 import { Thumbs } from 'swiper/modules';
+
 import { FiXCircle, FiPlusCircle, FiMinusCircle, FiShoppingCart } from "react-icons/fi";
 import { formattedPrice } from "../../ulti/formatPrice";
 
@@ -49,6 +52,8 @@ export default function ProductModal({ product, onClose }: PropsType) {
       quantity: quantity
     }
     dispatch(addToCartWithQuantity(dataProduct));
+    onClose();
+    dispatch(showModal());
   }
 
   return (
@@ -58,8 +63,19 @@ export default function ProductModal({ product, onClose }: PropsType) {
          <button
           aria-label="Close quick view"
           onClick={onClose}
-          className="absolute right-3 top-3 z-30 flex size-10 items-center justify-center bg-black/60 text-white"
-         ><FiXCircle /></button>
+          className="
+          absolute 
+          right-3 top-3 z-30
+          p-2 
+          flex 
+          items-center 
+          justify-center
+          text-xl
+          md:text-2xl
+          rounded-full
+          bg-black/80 text-white
+          cursor-pointer
+          "><FiXCircle /></button>
         <div className="product-modal__container relative grid w-full grid-cols-1 p-6 md:grid-cols-2">
           <div className="product-modal__media col-span-1 flex min-w-0 w-full flex-col gap-2">
             {/* Main Swiper -> pass thumbs swiper instance */}
@@ -97,7 +113,7 @@ export default function ProductModal({ product, onClose }: PropsType) {
               }
             </Swiper>
           </div>
-          <div className="product-modal__main-info min-w-0 py-10 px-10">
+          <div className="product-modal__main-info min-w-0 pt-10 md:p-10">
             <div className="product-modal__main-info--content flex flex-col gap-2">
               <h2 className="text-3xl font-700">{ product.name }</h2>
               <div>
