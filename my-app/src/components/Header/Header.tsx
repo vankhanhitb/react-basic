@@ -7,7 +7,7 @@ import Logo from "../../assets/logo.png";
 import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaCaretDown } from "react-icons/fa";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiHeart } from "react-icons/fi";
 import DarkMode from "./DarkMode";
 
 const Menus = [
@@ -59,9 +59,10 @@ const DropdownLinks = [
 export default function Header() {
   const [sticky, setSticky] = useState(false);
   const stickyRef = useRef(null);
-  const itemCount = useSelector((state: RootState) => state.cart.item_count)
+  const itemCount = useSelector((state: RootState) => state.cart.item_count);
+  const wishList = useSelector((state: RootState) => state.wishList.items);
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     const setStateSticky = () => {
       const handleScroll = () => {
@@ -117,6 +118,13 @@ export default function Header() {
             >
               <FaCartShopping className="relative z-2 text-xl drop-shadow-sm cursor-pointer" />
               <span className="min-w-5 text-[12px] absolute z-3 -top-1 -right-1 text-black font-bold border-gray-300 rounded-full transition-all duration-200 bg-amber-500">{itemCount ? itemCount : 0}</span>
+            </button>
+            {/* WishList */}
+            <button
+              className="w-9 h-9 relative flex justify-center items-center rounded-full bg-primary cursor-pointer"
+            >
+              <FiHeart />
+              <span className="min-w-5 text-[12px] absolute z-3 top-0 -right-1 text-black font-bold border-gray-300 rounded-full transition-all duration-200 bg-amber-500">{ wishList.length > 0 ? wishList.length : 0 }</span>
             </button>
             {/* Darkmode Switch */}
             <div>

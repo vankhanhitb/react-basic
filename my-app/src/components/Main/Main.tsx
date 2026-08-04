@@ -10,8 +10,9 @@ import Subscribe from '../Subscribe/Subscribe';
 import CartModal from "../CartModal";
 
 export default function Main() {
-  const cart = useSelector((state: RootState) => state.cart)
-  const modalStatus = useSelector((state: RootState) => state.modal.isOpen)
+  const cart = useSelector((state: RootState) => state.cart);
+  const modalStatus = useSelector((state: RootState) => state.modal.isOpen);
+  const wishList = useSelector((state: RootState) => state.wishList);
   
   return (
     <>
