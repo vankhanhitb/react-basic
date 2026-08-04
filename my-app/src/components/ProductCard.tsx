@@ -26,6 +26,11 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
     dispatch(showModal())
   }
 
+  const showProductModal = () => {
+    onQuickView(product);
+    document.querySelector('html')?.classList.add('overflow-hidden');
+  }
+
   return (
     <div className={`flex ${className}`}>
       <div className="product-card__image group relative w-full rounded-2xl overflow-hidden aspect-3/4 transition-shadow duration-300 hover:shadow-md">
@@ -101,7 +106,7 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
             <FiHeart />
           </button>
           <button
-            onClick={() => onQuickView(product)}
+            onClick={() => showProductModal()}
             className="
               p-3 border 
               transition-all

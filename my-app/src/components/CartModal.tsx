@@ -67,7 +67,7 @@ function CartModal({ cartData }: cartProps) {
                     cartData.items.map((product, index) => (
                       <div key={index} className="cart-drawer__line-item flex justify-start flex-row gap-2 not-last:border-b border-gray-200 not-first:pt-6 pb-6">
                         <div className="cart-drawer__line-item--image max-w-20 rounded-lg overflow-hidden">
-                          <img src={product.images?.featuredImage} alt="" />
+                          <img src={product.images?.featuredImage} alt="" className="w-full h-full object-cover" />
                         </div>
                         <div className="cart-drawer__line-item--info ml-2 flex flex-1 flex-col">
                           <h2>{product.name} x {product.quantity}</h2>

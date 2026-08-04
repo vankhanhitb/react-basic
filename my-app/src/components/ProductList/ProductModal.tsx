@@ -53,16 +53,29 @@ export default function ProductModal({ product, onClose }: PropsType) {
     }
     dispatch(addToCartWithQuantity(dataProduct));
     onClose();
+    if(document.querySelector('html')?.classList.contains('overflow-hidden') ){
+      document.querySelector('html')?.classList.remove('overflow-hidden') 
+    }
     dispatch(showModal());
+  }
+
+  const hiddenProductModal = () => {
+    onClose();
+    if(document.querySelector('html')?.classList.contains('overflow-hidden') ){
+      document.querySelector('html')?.classList.remove('overflow-hidden') 
+    }
   }
 
   return (
     <div className="fixed inset-0 z-99 flex items-center justify-center bg-gray-500/50 p-4">
-      <div className="product-modal__overlay product-modal__overlay absolute inset-0 z-10"></div>
+      <div
+        onClick={hiddenProductModal}
+        className="product-modal__overlay product-modal__overlay absolute inset-0 z-10"
+      ></div>
       <div className="product-modal__wrapper relative z-20 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white">
          <button
           aria-label="Close quick view"
-          onClick={onClose}
+          onClick={hiddenProductModal}
           className="
           absolute 
           right-3 top-3 z-30
