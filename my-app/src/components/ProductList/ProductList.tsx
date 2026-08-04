@@ -54,6 +54,23 @@ export default function ProductList() {
         modules={[A11y]}
         spaceBetween={20}
         slidesPerView={4.1}
+        breakpoints={{
+          320: {
+            slidesPerView: 1.1,
+            spaceBetween: 15,
+          },
+          480: {
+            slidesPerView: 2.1,
+            spaceBetween: 15,
+          },
+          768: {
+            slidesPerView: 3.1,
+            spaceBetween: 20,
+          },
+          1024: {
+            slidesPerView: 4.1,
+          }
+        }}
         scrollbar={{ draggable: true }}
         onSwiper={(swiper) => console.log(swiper)}
         onSlideChange={() => console.log('slide change')}
