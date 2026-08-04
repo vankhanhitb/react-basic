@@ -196,6 +196,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: BasicTee61,
       gallery: [
+        {src: BasicTee61},
         {src: BasicTee62},
         {src: BasicTee63},
         {src: BasicTee64},
@@ -238,6 +239,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: FleeceHoodieKids192,
       gallery: [
+        {src: FleeceHoodieKids192},
         {src: FleeceHoodieKids193},
         {src: FleeceHoodieKids194},
       ]
@@ -279,6 +281,7 @@ export const productsData: productType[] = [
       featuredImage: StripeBeanieBrown102,
       gallery: [
         {src: StripeBeanieBrown102},
+        {src: StripeBeanieBrown102},
         {src: StripeBeanieBrown103},
       ]
     },
@@ -317,6 +320,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: CuffedShortsKhaki131,
       gallery: [
+        {src: CuffedShortsKhaki131},
         {src: CuffedShortsKhaki132},
         {src: CuffedShortsKhaki133},
         {src: CuffedShortsKhaki134},
@@ -348,6 +352,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: LeatherSandalsBrown110,
       gallery: [
+        {src: LeatherSandalsBrown110},
         {src: LeatherSandalsBrown111},
         {src: LeatherSandalsBrown112},
         {src: LeatherSandalsBrown113},
@@ -381,6 +386,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: FloralKnitMint84,
       gallery: [
+        {src: FloralKnitMint84},
         {src: FloralKnitMint85},
         {src: FloralKnitMint86},
         {src: FloralKnitMint87},
@@ -413,6 +419,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: WaveKnitTop65,
       gallery: [
+        {src: WaveKnitTop65},
         {src: WaveKnitTop66},
         {src: WaveKnitTop67},
       ]
@@ -444,6 +451,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: SneakersGreen114,
       gallery: [
+        {src: SneakersGreen114},
         {src: SneakersGreen115},
         {src: SneakersGreen116},
         {src: SneakersGreen117},
@@ -475,6 +483,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: LogoPoloRed121,
       gallery: [
+        {src: LogoPoloRed121},
         {src: LogoPoloRed122},
         {src: LogoPoloRed123},
         {src: LogoPoloRed124},
@@ -507,6 +516,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: SleevelessTopYellow216,
       gallery: [
+        {src: SleevelessTopYellow216},
         {src: SleevelessTopYellow217},
         {src: SleevelessTopYellow218},
       ]
@@ -537,6 +547,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: StripedKnitBag98,
       gallery: [
+        {src: StripedKnitBag98},
         {src: StripedKnitBag99},
         {src: StripedKnitBag100},
         {src: StripedKnitBag101},
@@ -569,6 +580,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: BucketHatGreen106,
       gallery: [
+        {src: BucketHatGreen106},
         {src: BucketHatGreen107},
         {src: BucketHatGreen108},
         {src: BucketHatGreen109},
@@ -603,6 +615,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: CottonPoloGreen161,
       gallery: [
+        {src: CottonPoloGreen161},
         {src: CottonPoloGreen162},
         {src: CottonPoloGreen163}
       ]
@@ -635,6 +648,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: PocketVest42,
       gallery: [
+        {src: PocketVest42},
         {src: PocketVest43},
         {src: PocketVest44}
       ]
@@ -666,6 +680,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: DenimCollarTop19,
       gallery: [
+        {src: DenimCollarTop19},
         {src: DenimCollarTop20},
         {src: DenimCollarTop21}
       ]
@@ -699,6 +714,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: StripePoloPink34,
       gallery: [
+        {src: StripePoloPink34},
         {src: StripePoloPink35},
         {src: StripePoloPink36},
         {src: StripePoloPink37},
@@ -733,6 +749,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: StripeShorts207,
       gallery: [
+        {src: StripeShorts207},
         {src: StripeShorts208},
         {src: StripeShorts209},
         {src: StripeShorts210},
@@ -766,6 +783,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: DenimShortsBlue13,
       gallery: [
+        {src: DenimShortsBlue13},
         {src: DenimShortsBlue14},
         {src: DenimShortsBlue15},
         {src: DenimShortsBlue16},
@@ -799,6 +817,7 @@ export const productsData: productType[] = [
     images: {
       featuredImage: CanvasSneaker203,
       gallery: [
+        {src: CanvasSneaker203},
         {src: CanvasSneaker204},
         {src: CanvasSneaker205},
       ]

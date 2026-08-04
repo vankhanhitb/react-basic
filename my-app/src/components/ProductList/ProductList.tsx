@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { productsData, type productType } from "../../data/products";
 import Container from "../Container";
 import ProductCard from "../ProductCard";
+import ProductModal from "../ProductList/ProductModal";
 
 import { A11y } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,6 +12,7 @@ import 'swiper/css';
 export default function ProductList() {
   const [tabTitle, setTabTitle] = useState<string>("Accessories");
   const [product, setProduct] = useState<productType[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<productType | null>(null);
 
   const changeTab= (tab: string) => {
     setTabTitle(tab);
@@ -78,13 +80,17 @@ export default function ProductList() {
         {
           product.map((product) => (
             <SwiperSlide key={product.productId}>
-              <ProductCard key={product.name} product={product} className="product-card flex-col gap-4" />
+              <ProductCard key={product.name} product={product} onQuickView={setSelectedProduct} className="product-card flex-col gap-4" />
             </SwiperSlide>
           ))
         }
-
       </Swiper>
-      
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </Container>
   )
 }

@@ -10,6 +10,13 @@
   --color-primary: #fea928;
   --color-card-primary: #EDF1F4;
   --color-secondary: #ed8900;
-  --font-2: 20px;
-  --font-1/\.5\/: 15px;
+  --text-2: 20px;
+  --text-\1\.5: 15px;
+ }
+
+ .swiper-thumbs .swiper-slide-visible {
+  @apply border border-gray-100 rounded-lg overflow-hidden transition-all duration-300
+ }
+ .swiper-thumbs .swiper-slide-thumb-active {
+  @apply border-gray-400
  }

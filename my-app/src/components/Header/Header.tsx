@@ -116,7 +116,7 @@ export default function Header() {
             className="relative bg-linear-to-r from-primary to-secondary transition-all duration-20 py-1 px-4 rounded-full flex items-center gap-3 group cursor-pointer"
             >
               <FaCartShopping className="relative z-2 text-xl drop-shadow-sm cursor-pointer" />
-              <span className="min-w-5 text-[12px] absolute z-3 -top-1 -right-1 text-black border-gray-300 rounded-full transition-all duration-200 bg-amber-500">{itemCount ? itemCount : 0}</span>
+              <span className="min-w-5 text-[12px] absolute z-3 -top-1 -right-1 text-black font-bold border-gray-300 rounded-full transition-all duration-200 bg-amber-500">{itemCount ? itemCount : 0}</span>
             </button>
             {/* Darkmode Switch */}
             <div>

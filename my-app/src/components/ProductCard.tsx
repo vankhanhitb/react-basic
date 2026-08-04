@@ -10,9 +10,10 @@ import { FiHeart, FiShoppingCart, FiSearch, FiRefreshCw } from "react-icons/fi";
 type PropType = {
   className?: string,
   product: productType,
+  onQuickView: (product: productType) => void;
 }
 
-export default function ProductCard ({ className, product }: PropType) {
+export default function ProductCard ({ className, product, onQuickView }: PropType) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
@@ -99,7 +100,8 @@ export default function ProductCard ({ className, product }: PropType) {
           >
             <FiHeart />
           </button>
-          <button 
+          <button
+            onClick={() => onQuickView(product)}
             className="
               p-3 border 
               transition-all
@@ -125,7 +127,7 @@ export default function ProductCard ({ className, product }: PropType) {
           <div className="product-card__tag flex gap-2">
               {
                 product.categories?.map((item) => (
-                  <span className="px-1 py-.5 text-sm text-gray-500 font-600 border border-gray-200 rounded-[10px]">{item.name}</span>
+                  <span key={`${product.productId}-badge-${item.name}`} className="px-1 py-.5 text-sm text-gray-500 font-600 border border-gray-200 rounded-[10px]">{item.name}</span>
                 ))
               }
           </div>
