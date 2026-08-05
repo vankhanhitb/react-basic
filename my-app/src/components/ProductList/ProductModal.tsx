@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from "react-redux";
 import { addToCartWithQuantity } from "../../features/cart/cartSlice";
 import { showModal } from "../../features/cart/modalSlide";
@@ -7,11 +7,16 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from "swiper";
 import { Thumbs } from 'swiper/modules';
 
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
 import { FiXCircle, FiPlusCircle, FiMinusCircle, FiShoppingCart } from "react-icons/fi";
 import { formattedPrice } from "../../ulti/formatPrice";
 
 
 import { type productType } from "../../data/products";
+
+gsap.registerPlugin(useGSAP);
 
 type PropsType = {
   product: productType;
@@ -22,6 +27,77 @@ export default function ProductModal({ product, onClose }: PropsType) {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const dispatch = useDispatch();
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const isClosingRef = useRef(false);
+
+  const { contextSafe } = useGSAP(
+  () => {
+    const timeline = gsap.timeline();
+      
+    timeline
+        .fromTo(
+          modalRef.current,
+          { autoAlpha: 0 },
+          {
+            autoAlpha: 1,
+            duration: 0.2,
+            ease: "power2.out",
+          },
+        )
+        .fromTo(
+          panelRef.current,
+          {
+            autoAlpha: 0,
+            scale: 0.5,
+          },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.35,
+            ease: "power3.out",
+            transformOrigin: "center center",
+          },
+          "<",
+        );
+    },
+    { scope: modalRef },
+  );
+
+  const closeProductModal = (afterClose?: () => void) => {
+    if (isClosingRef.current) return;
+
+    isClosingRef.current = true;
+    gsap
+    .timeline({
+      onComplete: () => {
+        document.documentElement.classList.remove("overflow-hidden");
+        onClose();
+        afterClose?.();
+      },
+    })
+    .to(panelRef.current, {
+      autoAlpha: 0,
+      scale: 0.5,
+      duration: 0.25,
+      ease: "power3.in",
+      transformOrigin: "center center",
+    })
+    .to(
+      modalRef.current,
+      {
+        autoAlpha: 0,
+        duration: 0.2,
+        ease: "power2.in",
+      },
+      "<",
+    );
+  }
+
+  const hiddenProductModal = () => {
+    closeProductModal();
+  };
 
   const handleClick = (type: string) => {
     switch (type){
@@ -57,22 +133,23 @@ export default function ProductModal({ product, onClose }: PropsType) {
       document.querySelector('html')?.classList.remove('overflow-hidden') 
     }
     dispatch(showModal());
-  }
-
-  const hiddenProductModal = () => {
-    onClose();
-    if(document.querySelector('html')?.classList.contains('overflow-hidden') ){
-      document.querySelector('html')?.classList.remove('overflow-hidden') 
-    }
+    closeProductModal(() => {
+      dispatch(showModal());
+    });
   }
 
   return (
-    <div className="fixed inset-0 z-99 flex items-center justify-center bg-gray-500/50 p-4">
+    <div 
+      ref={modalRef}
+      className="fixed inset-0 z-99 flex items-center justify-center bg-gray-500/50 p-4"
+    >
       <div
         onClick={hiddenProductModal}
         className="product-modal__overlay product-modal__overlay absolute inset-0 z-10"
       ></div>
-      <div className="product-modal__wrapper relative z-20 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white">
+      <div ref={panelRef} 
+        className="product-modal__wrapper relative z-20 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white"
+      >
          <button
           aria-label="Close quick view"
           onClick={hiddenProductModal}
