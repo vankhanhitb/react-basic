@@ -38,8 +38,7 @@ export default function ProductList() {
     filterProduct(tabTitle);
   }, [tabTitle])
 
-  useGSAP(
-    () => {
+  useGSAP(() => {
       if (!product.length) return;
 
       gsap.fromTo(

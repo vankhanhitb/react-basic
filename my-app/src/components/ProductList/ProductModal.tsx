@@ -32,12 +32,10 @@ export default function ProductModal({ product, onClose }: PropsType) {
   const panelRef = useRef<HTMLDivElement>(null);
   const isClosingRef = useRef(false);
 
-  const { contextSafe } = useGSAP(
-  () => {
+  const { contextSafe } = useGSAP(() => {
     const timeline = gsap.timeline();
       
-    timeline
-        .fromTo(
+    timeline.fromTo(
           modalRef.current,
           { autoAlpha: 0 },
           {
@@ -45,8 +43,7 @@ export default function ProductModal({ product, onClose }: PropsType) {
             duration: 0.2,
             ease: "power2.out",
           },
-        )
-        .fromTo(
+        ).fromTo(
           panelRef.current,
           {
             autoAlpha: 0,
@@ -69,22 +66,19 @@ export default function ProductModal({ product, onClose }: PropsType) {
     if (isClosingRef.current) return;
 
     isClosingRef.current = true;
-    gsap
-    .timeline({
+    gsap.timeline({
       onComplete: () => {
         document.documentElement.classList.remove("overflow-hidden");
         onClose();
         afterClose?.();
       },
-    })
-    .to(panelRef.current, {
+    }).to(panelRef.current, {
       autoAlpha: 0,
       scale: 0.5,
       duration: 0.25,
       ease: "power3.in",
       transformOrigin: "center center",
-    })
-    .to(
+    }).to(
       modalRef.current,
       {
         autoAlpha: 0,
