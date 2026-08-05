@@ -64,7 +64,8 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
               m-auto bg-white py-3 
               rounded-3xl uppercase 
               transition-all duration-350 
-              translate-y-0 opacity-100 pointer-fine:translate-y-5 pointer-fine:opacity-0
+              translate-y-0 opacity-100 
+              pointer-fine:translate-y-5 pointer-fine:opacity-0
               group-hover:translate-y-0 
               group-hover:opacity-100 
               hover:bg-primary 
