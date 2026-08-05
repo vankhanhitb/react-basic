@@ -21,7 +21,7 @@ export default function Main() {
       <CollectionList />
       <Testimonials />
       <Subscribe />
-      {modalStatus === true && <CartModal cartData={cart} />}
+      <CartModal cartData={cart} isOpen={modalStatus} />
       <WishListAnnounce />
     </>
   )

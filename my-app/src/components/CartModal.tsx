@@ -8,7 +8,8 @@ import { type CartState } from "../features/cart/cartSlice";
 import { formattedPrice } from "../ulti/formatPrice";
 
 type cartProps = {
-  cartData: CartState,
+  cartData: CartState;
+  isOpen: boolean;
 }
 
 type Price= {
@@ -16,7 +17,7 @@ type Price= {
   salePrice: string
 }
 
-function CartModal({ cartData }: cartProps) {
+function CartModal({ cartData, isOpen }: cartProps) {
   const dispatch = useDispatch();
 
   const handleClick = (productId:number, status: string) => {
@@ -45,12 +46,50 @@ function CartModal({ cartData }: cartProps) {
   }
 
   return (
-    <div className="flex flex-row-reverse w-full h-full fixed top-0 right-0 z-99">
+    <div
+      aria-hidden={!isOpen}
+      inert={!isOpen}
+      className={`
+        fixed inset-0 z-99
+        flex flex-row-reverse
+        overflow-hidden
+        ${
+          isOpen
+          ? "pointer-events-auto"
+          : "pointer-events-none"
+        }
+      `}
+    >
       <div
         onClick={() => dispatch(closeModal())}
-        className="cart-drawer__overlay w-full h-full bg-gray-700/45 absolute top-0 left-0"
+        className={`
+          cart-drawer__overlay 
+          absolute inset-0
+        bg-gray-700/45
+          transition-opacity duration-300
+          ${isOpen
+            ? "opacity-100"
+            : "opacity-0"
+          }
+        `}
       ></div>
-      <div className="cart-drawer__wrapper max-w-100 w-full h-full relative z-40 flex flex-col justify-between px-5 pt-8 bg-white">
+      <div 
+        className={`
+          cart-drawer__wrapper
+          relative z-40
+          flex h-full w-full max-w-100
+          origin-right flex-col justify-between
+          bg-white px-5 pt-8
+          transition-[translate,opacity]
+          duration-300 ease-out
+
+          ${
+            isOpen
+              ? "translate-x-0 opacity-100"
+              : "translate-x-full opacity-0"
+          } 
+        `}
+      >
         <button
           onClick={() => dispatch(closeModal())}
           className="w-10 h-10 flex justify-center items-center absolute top-3 right-3 cursor-pointer text-3xl"
