@@ -54,11 +54,11 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
           group-hover:scale-105
           "
         />
-        <div className="product-card__add-to-cart w-full absolute bottom-10 left-0 flex justify-center items-center">
+        <div className="product-card__add-to-cart px-5 w-full absolute bottom-10 left-0 flex justify-center items-center">
             <button
               onClick={() => handleAddToCart(product)}
               className="
-              max-w-80 w-full 
+              w-full 
               flex justify-center 
               items-center gap-2 
               m-auto bg-white py-3 
