@@ -18,9 +18,9 @@ export default function Search() {
   ? productsData.filter((product) => {
     const matchesName = product.name.toLowerCase().includes(searchTerm) ?? false;
 
-    const matchesDescription = product.description?.toLowerCase().includes(searchTerm) ?? false;
+    // const matchesDescription = product.description?.toLowerCase().includes(searchTerm) ?? false;
 
-    return matchesName || matchesDescription;
+    return matchesName;
   }) 
   : [];
 
@@ -62,6 +62,7 @@ export default function Search() {
               </div>
               <div>
                 <h2 className="text-md">{item.name}</h2>
+                {/* <p className="line-clamp-2">{item.description}</p> */}
                 <div>
                   {
                     item.price.onSalePrice ? 
