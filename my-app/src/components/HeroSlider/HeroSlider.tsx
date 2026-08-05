@@ -231,20 +231,23 @@ export default function HeroSlider({
           [&_.swiper-pagination-bullet]:w-4!
           [&_.swiper-pagination-bullet]:bg-white!
           [&_.swiper-pagination-bullet]:opacity-50
-          [&_.swiper-pagination-bullet-active]:w-8
+          [&_.swiper-pagination-bullet-active]:w-5
           [&_.swiper-pagination-bullet-active]:rounded-full
           [&_.swiper-pagination-bullet-active]:opacity-100
+
           [&_.swiper-button-prev]:left-auto!
-          [&_.swiper-button-prev]:right-16!
+          [&_.swiper-button-prev]:right-20!
           [&_.swiper-button-prev]:top-auto!
-          [&_.swiper-button-prev]:bottom-6!
-          [&_.swiper-button-prev]:size-8!
+          [&_.swiper-button-prev]:bottom-3!
+          [&_.swiper-button-prev]:size-6!
+          [&_.swiper-button-prev]:z-20!
           [&_.swiper-button-prev]:text-white!
 
-          [&_.swiper-button-next]:right-6!
+          [&_.swiper-button-next]:right-10!
           [&_.swiper-button-next]:top-auto!
-          [&_.swiper-button-next]:bottom-6!
-          [&_.swiper-button-next]:size-8!
+          [&_.swiper-button-next]:bottom-3!
+          [&_.swiper-button-next]:size-6!
+          [&_.swiper-button-next]:z-20!
           [&_.swiper-button-next]:text-white!
         "
       >
