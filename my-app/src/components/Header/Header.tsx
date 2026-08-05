@@ -10,7 +10,11 @@ import DarkMode from "./DarkMode";
 import Search from "./Search";
 import Menu from "./Menu";
 
-export default function Header() {
+type PropsHeader = {
+  toggleMenu: () => void
+}
+
+export default function Header({ toggleMenu }: PropsHeader) {
   const [sticky, setSticky] = useState(false);
   const stickyRef = useRef(null);
   const itemCount = useSelector((state: RootState) => state.cart.item_count);
@@ -46,7 +50,11 @@ export default function Header() {
         <div className="container m-auto flex justify-between items-center">
           {/* Logo */}
           <div className="logo flex justify-center items-center">
-            <button className="md:hidden lg:hidden sm:block cursor-pointer dark:text-white">
+            <button
+              onClick={toggleMenu}
+              type="button"
+              className="block md:hidden cursor-pointer dark:text-white"
+            >
               <FiMenu className="w-10 text-2xl" />
             </button>
             <a href="/" className="flex gap-2">
@@ -74,14 +82,14 @@ export default function Header() {
               <span className="min-w-5 text-[12px] absolute z-3 top-0 -right-1 text-black font-bold border-gray-300 rounded-full transition-all duration-200 bg-amber-500">{ wishList.length > 0 ? wishList.length : 0 }</span>
             </button>
             {/* Darkmode Switch */}
-            <div>
+            <div className="hidden sm:block">
               <DarkMode />
             </div>
           </div>
         </div>
       </div>
       {/* Menus */}
-      <div className="flex justify-center mt-3">
+      <div className="hidden md:flex justify-center mt-3">
         <Menu />
       </div>
     </div>

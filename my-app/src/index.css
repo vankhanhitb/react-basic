@@ -17,6 +17,36 @@
  .swiper-thumbs .swiper-slide-visible {
   @apply border border-gray-100 rounded-lg overflow-hidden transition-all duration-300
  }
+
  .swiper-thumbs .swiper-slide-thumb-active {
   @apply border-gray-400
  }
+
+ @utility container {
+  width: 100%;
+  padding: 0 .5rem;
+  /* sm screen: viewport >= 640px */
+  @media (width >= 40rem) {
+    max-width: 37.5rem; /* 600px */
+  }
+
+  /* md screen: viewport >= 768px */
+  @media (width >= 48rem) {
+    max-width: 100%; /* 720px */
+  }
+
+  /* lg screen: viewport >= 1024px */
+  @media (width >= 64rem) {
+    max-width: 100%; /* 960px */
+  }
+
+  /* xl screen: viewport >= 1280px */
+  @media (width >= 80rem) {
+    max-width: 75rem; /* 1200px */
+  }
+
+  /* 2xl screen: viewport >= 1536px */
+  @media (width >= 96rem) {
+    max-width: 90rem; /* 1440px */
+  }
+}

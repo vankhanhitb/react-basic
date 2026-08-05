@@ -57,7 +57,7 @@ export default function Menu() {
             <li key={item.id}>
                 <a 
                   href={item.link}
-                  className="inline-block px-4 py-3 hover-text-primary duration-200 text-[16px] uppercase"
+                  className="inline-block px-2 py-3 hover-text-primary duration-200 text-[16px] uppercase"
                 >
                   {item.name}
                 </a>
