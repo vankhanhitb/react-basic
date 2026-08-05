@@ -122,6 +122,7 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
               pointer-fine:pointer-events-none
               group-hover:translate-x-0
               group-hover:opacity-100
+              group-hover:pointer-events-auto
               cursor-pointer
             `}
           >
