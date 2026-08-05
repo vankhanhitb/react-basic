@@ -42,14 +42,14 @@ export default function WishListAnnounce() {
       aria-live="polite"
       aria-atomic="true"
       className={`
-        fixed bottom-4 left-4 right-4 z-99
+        fixed bottom-4 right-4 z-99
         rounded-xl border px-5 py-4
         text-sm font-semibold shadow-xl
         sm:left-auto sm:w-full sm:max-w-sm
         ${
           wasAdded
             ? "border-green-300 bg-green-50 text-green-800"
-            : "border-red-300 bg-red-50 text-red-800"
+            : "border-red-300  bg-red-50 text-red-800"
         }
       `}
     >
