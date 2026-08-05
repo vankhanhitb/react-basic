@@ -4,57 +4,11 @@ import { showModal } from "../../features/cart/modalSlide";
 import type { RootState } from "../../store/store";
 
 import Logo from "../../assets/logo.png";
-import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
-import { FaCaretDown } from "react-icons/fa";
 import { FiMenu, FiHeart } from "react-icons/fi";
 import DarkMode from "./DarkMode";
-
-const Menus = [
-  {
-    id: 1,
-    name: "Home",
-    link: "/#",
-  },
-  {
-    id: 2,
-    name: "Top Rated",
-    link: "/#services",
-  },
-  {
-    id: 4,
-    name: "Kids Wear",
-    link: "/#",
-  },
-  {
-    id: 5,
-    name: "Mens Wear",
-    link: "/#",
-  },
-  {
-    id: 6,
-    name: "Electronics",
-    link: "/#",
-  },
-];
-
-const DropdownLinks = [
-  {
-    id: 1,
-    name: "Trending Products",
-    link: "/#",
-  },
-  {
-    id: 2,
-    name: "Best Selling",
-    link: "/#",
-  },
-  {
-    id: 3,
-    name: "Top Rated",
-    link: "/#",
-  },
-];
+import Search from "./Search";
+import Menu from "./Menu";
 
 export default function Header() {
   const [sticky, setSticky] = useState(false);
@@ -103,14 +57,7 @@ export default function Header() {
           
           <div className="flex justify-between items-center gap-4">
             {/* Search Bar */}
-            <div className="relative group hidden sm:block">
-              <input 
-                type="text"
-                placeholder="Search..."
-                className="w-50 sm:w-50 group-hover:w-75 px-2 py-1 border rounded-full border-gray-300 transition-all duration-300 focus:outline-none focus:border focus:w-75 focus:border-primary dark:border-gray-500 dark:bg-gray-800"
-              />
-              <IoMdSearch className="text-gray-500 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3" />
-            </div>
+            <Search />
             {/* Order Button */}
             <button
             onClick={() => dispatch(showModal())}
@@ -135,44 +82,7 @@ export default function Header() {
       </div>
       {/* Menus */}
       <div className="flex justify-center mt-3">
-        <ul className="justify-center items-center gap-4 hidden md:flex">
-            {
-              Menus.map((item) => (
-                <li key={item.id}>
-                    <a 
-                      href={item.link}
-                      className="inline-block px-4 py-3 hover-text-primary duration-200 text-[16px] uppercase"
-                    >
-                      {item.name}
-                    </a>
-                </li>
-              ))
-            }
-            {/* Dropdown */}
-            <li className="group relative cursor-pointer">
-              <a href="#" className="flex items-center gap-0.5 text-[16px] uppercase py-3">
-                Trending Products 
-                <span>
-                  <FaCaretDown className="transition-all duration-200 group-hover:rotate-180" />
-                </span>
-              </a>
-              <div className="absolute z-99 hidden group-hover:block w-50 rounded-md bg-white p-2 text-black shadow-md">
-                <ul>
-                  {
-                    DropdownLinks.map((item)=>(
-                      <li key={item.id}>
-                        <a href={item.link}
-                          className="inline-block w-full text-sm uppercase rounded-md p-2 hover:bg-primary/20"
-                        >
-                          {item.name}
-                        </a>
-                      </li>
-                    ))
-                  }
-                </ul>
-              </div>
-            </li>
-        </ul>
+        <Menu />
       </div>
     </div>
   )

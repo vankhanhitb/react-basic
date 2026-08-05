@@ -8,11 +8,11 @@ import CollectionList from '../CollectionList/CollectionList';
 import Testimonials from '../Testimonials/Testimonials';
 import Subscribe from '../Subscribe/Subscribe';
 import CartModal from "../CartModal";
+import WishListAnnounce from "../../components/WishListAnnounce";
 
 export default function Main() {
   const cart = useSelector((state: RootState) => state.cart);
   const modalStatus = useSelector((state: RootState) => state.modal.isOpen);
-  const wishList = useSelector((state: RootState) => state.wishList);
   
   return (
     <>
@@ -22,6 +22,7 @@ export default function Main() {
       <Testimonials />
       <Subscribe />
       {modalStatus === true && <CartModal cartData={cart} />}
+      <WishListAnnounce />
     </>
   )
 }

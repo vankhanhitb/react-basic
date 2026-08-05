@@ -4,7 +4,7 @@ import { type RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../features/cart/cartSlice";
 import { showModal } from "../features/cart/modalSlide";
-import { addWishListItem } from "../features/wishlist/wishlistSlice";
+import { toggleWishList } from "../features/wishlist/wishlistSlice";
 
 import { formattedPrice } from "../ulti/formatPrice";
 import { FiHeart, FiShoppingCart, FiSearch, FiRefreshCw } from "react-icons/fi";
@@ -29,9 +29,9 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
     dispatch(showModal())
   }
 
-  const findExistProductWishList = wishList.find((item) => {
-    return item.productId === product.productId;
-  })
+  const isInWishList = wishList.some(
+    (item) => item.productId === product.productId,
+  );
 
   const showProductModal = () => {
     onQuickView(product);
@@ -94,7 +94,13 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
         </div>
         <div className="product-card__icons flex flex-col gap-2 absolute top-3 right-3">
           <button
-            onClick={() => dispatch(addWishListItem({product}))}
+            onClick={() => dispatch(toggleWishList({product}))}
+            type="button"
+            aria-label={
+              isInWishList
+              ? `Remove ${product.name} from wishlist`
+              : `Add ${product.name} to wishlist`
+            }
             className={`
               p-3 border
               transition-all
@@ -106,7 +112,10 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
               hover:bg-primary
               hover:text-white
               hover:border-white
-              ${findExistProductWishList ? "bg-primary text-white border-white" : ""}
+              ${isInWishList 
+              ? "bg-primary text-white border-white" 
+              : ""
+              }
               group-hover:translate-x-0
               group-hover:opacity-100
               cursor-pointer
