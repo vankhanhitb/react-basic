@@ -26,7 +26,7 @@ export default function Subscribe() {
         <h2 className="text-center text-3xl capitalize">Subscription now to get <span className="font-bold text-red-600">UP</span> to <span className="font-bold text-red-600">20% DISCOUNT</span></h2>
       </div>
       <div className="container m-auto mt-10 mb-20 flex justify-center items-center">
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col justify-center items-center">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col justify-center items-center relative">
           <div className="subscription__form flex max-w-120 w-full justify-center items-center relative">
               <input
                 {...register("email")}
@@ -67,7 +67,7 @@ export default function Subscribe() {
             <p
               id="subscription-email-error"
               role="alert"
-              className="w-full max-w-120 text-sm text-red-600"
+              className="w-full max-w-120 text-sm text-red-600 absolute top-full"
             >
               {errors.email.message}
             </p>
