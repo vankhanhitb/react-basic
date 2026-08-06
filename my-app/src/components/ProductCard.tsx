@@ -164,7 +164,7 @@ export default function ProductCard ({ className, product, onQuickView }: PropTy
               }
           </div>
         }
-        <h2 className="product-card__title text-2xl font-600">{product.name}</h2>
+        <h2 className="product-card__title text-xl font-600">{product.name}</h2>
         <div className="product-card__price">
           {
             product.price.onSalePrice ? 
