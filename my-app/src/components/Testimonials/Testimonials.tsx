@@ -41,8 +41,8 @@ export default function Testimonials() {
                     <div className="testimonial__item-content mt-10 flex justify-start items-center gap-2">
                       <img src={testimonial.image} alt="" className="w-20 h-auto rounded-full border border-gray-200 p-1 shadow-md" />
                       <div className="testimonial__item-info">
-                        <h3>{testimonial.name}</h3>
-                        <p className="flex justify-start items-center gap-2"><FiCheckCircle className="bg-green-700 text-white rounded-full" /> Verify Byer</p>
+                        <h3 className="text-xl font-700">{testimonial.name}</h3>
+                        <p className="flex justify-start items-center gap-2 text-sm font-bold text-gray-400"><FiCheckCircle className="bg-green-700 text-white rounded-full" /> Verify Byer</p>
                       </div>
                     </div>
                   </div>
