@@ -22,23 +22,22 @@ export default function Header({ toggleMenu }: PropsHeader) {
   const dispatch = useDispatch();
   
   useEffect(() => {
-    const setStateSticky = () => {
-      const handleScroll = () => {
-        if (window.scrollY > 0) {
-          setSticky(true);
-        } else {
-          setSticky(false);
-        }
-      };
-
-      window.addEventListener("scroll", handleScroll, { passive: true });
-
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
+    const handleScroll = () => {
+      setSticky(window.scrollY > 0)
     }
-    setStateSticky();
-  }, [sticky])
+
+    handleScroll();
+
+    window.addEventListener("scroll", () => {
+      handleScroll();
+    })
+
+    return () => {
+      window.addEventListener("scroll", () => {
+        handleScroll();
+      })
+    }
+  }, [])
 
   return (
     <div 
