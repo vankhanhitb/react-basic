@@ -4,8 +4,10 @@ import cookieParser from "cookie-parser";
 
 import { connectDB } from "./config/db";
 
+import userRouters from "../backend/routers/userRouters";
+
 const app = express();
-const PORT = Number(process.env.PORT) || 5000;
+const PORT = Number(process.env.PORT) || 5005;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,3 +37,6 @@ const startServer = async (): Promise<void> => {
 };
 
 void startServer();
+
+//UserRouter
+app.use("/api/users", userRouters);
