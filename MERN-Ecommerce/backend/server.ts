@@ -1,22 +1,37 @@
-import path from "path"
-import dotenv from "dotenv/config";
+import "dotenv/config";
 import express from "express";
-import cookieParse from "cookie-parser";
+import cookieParser from "cookie-parser";
 
-import { connectDB } from "../backend/config/db";
-
-dotenv.config();
-const PORT = Number(process.env.PORT) || 5000;
-
-connectDB();
+import { connectDB } from "./config/db";
 
 const app = express();
+const PORT = Number(process.env.PORT) || 5000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParse());
+app.use(cookieParser());
 
 app.get("/", (_req, res) => {
-  console.log(`Connect to MERN`);
+  res.status(200).json({
+    success: true,
+    message: "MERN Ecommerce API is running",
+  });
 });
 
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`))
+const startServer = async (): Promise<void> => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Unknown startup error";
+
+    console.error(`Server startup failed: ${message}`);
+    process.exit(1);
+  }
+};
+
+void startServer();
