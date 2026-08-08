@@ -8,7 +8,9 @@ export const connectDB = async () => {
       throw new Error("MONGODB_URI is not defined")
     }
 
-    await mongoose.connect(mongoo_url);
+    await mongoose.connect(mongoo_url,{
+      dbName: "MERN_ECOM1",
+    });
 
     console.log(`Connect successfully`);
 
