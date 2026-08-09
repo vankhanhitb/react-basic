@@ -133,7 +133,7 @@ const getAllUsers = asyncHandler(
   },
 );
 
-//
+// Get User Profile
 const getCurrentUserProfile = asyncHandler(
   async (req, res) => {
     const user = await User.findOne(req.user?._id);
@@ -259,6 +259,33 @@ UpdateCurrentUserBody
 
 });
 
+// HANDLE API IN ADMIN
+const deleteUserById = asyncHandler(
+  async (req, res) => {
+
+    if(!req.params.id){
+      res.status(404)
+      throw new Error("ID invalid or User removed already");
+    }
+
+    const user = await User.findById(req.params.id);
+
+    if(user) {
+      if(user.isAdmin) {
+        res.status(403)
+        throw new Error('Cannot delete admin user');
+      }
+      await User.deleteOne({_id: user._id});
+      res.json({
+        message: "User removed",
+      })
+    }else {
+      res.status(404)
+      throw new Error("User not found");
+    }
+  }
+);
+
 export { 
   createUser, 
   loginUser, 
@@ -266,4 +293,5 @@ export {
   getAllUsers, 
   getCurrentUserProfile,
   updateCurrentUser,
+  deleteUserById,
 };
