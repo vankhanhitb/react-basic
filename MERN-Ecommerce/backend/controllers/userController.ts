@@ -286,6 +286,101 @@ const deleteUserById = asyncHandler(
   }
 );
 
+// GET USER BY ID
+const getUserById = asyncHandler(
+  async (req, res) => {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if(user){
+      res.json(user);
+    }else{
+      res.status(404)
+      throw new Error("User not Found");
+    }
+
+  }
+);
+
+// Update User By ID
+const updateUserById = asyncHandler<
+Record<string, never>,
+UpdateCurrentUserResponse,
+UpdateCurrentUserBody
+>(
+  async (req, res): Promise<void> => {
+
+    const user = await User.findById(req.params.id);
+
+    if(!user){
+      res.status(404).json({
+        message: "User not found",
+      })
+      return;
+    }
+
+    const { username, email, password, isAdmin} = req.body;
+
+    if(username !== undefined){
+      const normallizeUsername = username.trim();
+      
+      if(!normallizeUsername) {
+        res.status(400).json({
+          message: "Username connot be empty",
+        })
+        return;
+      }
+      user.username = normallizeUsername;
+    }
+
+    if(email !== undefined) {
+      const normalizedEmail = email.trim().toLowerCase();
+      if(!normalizedEmail){
+        res.status(400).json({
+          message: "Email cannot be empty",
+        })
+        return;
+      }
+
+      const emailOwner = await User.findOne({
+        email: normalizedEmail,
+        _id: { $ne: user._id},
+      });
+
+      if(emailOwner){
+        res.status(409).json({
+          message: "Email is already in use",
+        });
+        return;
+      }
+
+      user.email = normalizedEmail;
+    }
+
+    if(password !== undefined){
+      if(password.length < 8){
+        res.status(400).json({
+          message: "Password must contain at least 8 characters",
+        });
+        return;
+      }
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    if(isAdmin !== undefined){
+      user.isAdmin = isAdmin;
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id.toString(),
+      username: updatedUser.username,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin
+    });
+  }
+);
+
 export { 
   createUser, 
   loginUser, 
@@ -294,4 +389,6 @@ export {
   getCurrentUserProfile,
   updateCurrentUser,
   deleteUserById,
+  getUserById,
+  updateUserById,
 };

@@ -7,6 +7,8 @@ import {
   getCurrentUserProfile,
   updateCurrentUser,
   deleteUserById,
+  getUserById,
+  updateUserById,
 } from "../controllers/userController";
 
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware";
@@ -20,6 +22,8 @@ router.post("/logout", logoutUser);
 router.route("/profile").get(authenticate, getCurrentUserProfile).patch(authenticate, updateCurrentUser);
 
 //ADMIN ROUTE
-router.route('/:id').delete(authenticate, authorizeAdmin, deleteUserById);
+router.route('/:id').delete(authenticate, authorizeAdmin, deleteUserById)
+                    .get(authenticate, authorizeAdmin, getUserById)
+                    .patch(authenticate, authorizeAdmin, updateUserById);
 
 export default router;
