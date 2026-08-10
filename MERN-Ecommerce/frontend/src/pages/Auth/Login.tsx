@@ -1,23 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
+import { type RootState } from "../../redux/features/store";
 import {
   Link,
   useLocation,
-  useNavigation
+  useNavigate
 } from "react-router-dom";
 import { setCredientials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useLoginMutation } from '../../redux/api/usersApiSlice';
 import Loader from "../../components/Loader";
 
 export default function Login() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const dispatch = useDispatch();
-  const navigate = useNavigation();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
   const [login, { isLoading }] = useLoginMutation();
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const userInfo = useAppSelector((state: RootState) => state.auth.userInfo);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
@@ -28,14 +29,14 @@ export default function Login() {
     }
   }, [navigate, redirect, userInfo])
 
-  const submitHandler = async (e) => {
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await login({email, password}).unwrap();
       console.log(res);
       dispatch(setCredientials({...res}));
-    } catch (error) {
-      toast.error(error?.data?.message || error.message);
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error));
     }
   }
 
@@ -101,4 +102,26 @@ export default function Login() {
       </div>
     </section>
   )
+}
+
+function getErrorMessage(error: unknown): string {
+  if (typeof error !== "object" || error === null) {
+    return "Unable to sign in";
+  }
+
+  if (
+    "data" in error &&
+    typeof error.data === "object" &&
+    error.data !== null &&
+    "message" in error.data &&
+    typeof error.data.message === "string"
+  ) {
+    return error.data.message;
+  }
+
+  if ("message" in error && typeof error.message === "string") {
+    return error.message;
+  }
+
+  return "Unable to sign in";
 }

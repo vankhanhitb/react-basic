@@ -71,7 +71,7 @@ export default function Navigation() {
         ${showSidebar ? "hidden" : ""}
       `}
     >
-      <div className="w-full flex-1 flex flex-col justify-start gap-10 overflow-hidden pt-12">
+      <div className="w-full flex-1 flex flex-col justify-start gap-10 overflow-hidden pt-5">
         <Link
           to="/"
           onClick={closeSidebar}
