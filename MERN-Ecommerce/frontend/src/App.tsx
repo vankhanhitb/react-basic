@@ -5,13 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <>
+    <div className="flex flex-row bg-gray-900">
       <ToastContainer />
       <Navigation />
-      <main className="w-full">
+      <main className="max-w-[calc(100% - 15)] w-full">
         <Outlet />
       </main>
-    </>
+    </div>
   );
 }
 

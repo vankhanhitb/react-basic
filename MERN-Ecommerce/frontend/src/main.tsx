@@ -12,9 +12,13 @@ import {
 import { Provider } from "react-redux";
 import store from "./redux/features/store.ts";
 
+import Login from "./pages/Auth/Login";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />} />,
+    <Route path="/" element={<App />}>
+      <Route path="/login" element={<Login />} />
+    </Route>
   ),
 );
 
