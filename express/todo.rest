@@ -21,20 +21,20 @@ Content-Type: application/json
 
 ### Fetch all todos GET / TODOS (protected)
 GET http://localhost:5555/todos
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDM3NzYwLCJleHAiOjE3ODcxMjQxNjB9.azi85chLpnPNdw6szXmt__ytLnSj_tLszC2HVeHFrTA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDQzODg0LCJleHAiOjE3ODcxMzAyODR9.vHmmVY9XyAsTbdtbhh6zh6bV0SIkVUBUuMzE-CzSLU0
 
 ### Create a new todo POST /TODOS (protected)
 POST http://localhost:5555/todos
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDM3NzYwLCJleHAiOjE3ODcxMjQxNjB9.azi85chLpnPNdw6szXmt__ytLnSj_tLszC2HVeHFrTA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDQzODg0LCJleHAiOjE3ODcxMzAyODR9.vHmmVY9XyAsTbdtbhh6zh6bV0SIkVUBUuMzE-CzSLU0
 Content-Type:application/json
 
 {
-  "task":"Finished coding the project"
+  "task":"Make project correctly"
 }
 
 ### Update Todo PATCH /todos/:id
 PATCH http://localhost:5555/todos/2
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDM3NzYwLCJleHAiOjE3ODcxMjQxNjB9.azi85chLpnPNdw6szXmt__ytLnSj_tLszC2HVeHFrTA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDQzODg0LCJleHAiOjE3ODcxMzAyODR9.vHmmVY9XyAsTbdtbhh6zh6bV0SIkVUBUuMzE-CzSLU0
 Content-Type: application/json
 
 {
