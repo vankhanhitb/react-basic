@@ -1,0 +1,22 @@
+@baseUrl = http://localhost:5555
+
+### GET HOMEPAGE
+
+GET {{baseUrl}}/
+
+### GET DASHBOARD
+
+GET {{baseUrl}}/dashboard
+
+### GET DATA
+
+GET {{baseUrl}}/api/data
+
+### CREATE DATA
+
+PATCH {{baseUrl}}/api/data
+Content-Type: application/json
+
+{
+  "username": "Michale Json"
+}
