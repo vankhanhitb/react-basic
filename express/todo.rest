@@ -1,0 +1,43 @@
+### GET 
+GET http://localhost:5555/
+
+###
+POST http://localhost:5555/auth/register
+Content-Type: application/json
+
+{
+  "username": "jmwoocommerce@gmail.com",
+  "password": "123456789"
+}
+
+###
+POST http://localhost:5555/auth/login
+Content-Type: application/json
+
+{
+  "username": "jmwoocommerce@gmail.com",
+  "password": "123456789"
+}
+
+### Fetch all todos GET / TODOS (protected)
+GET http://localhost:5555/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDM3NzYwLCJleHAiOjE3ODcxMjQxNjB9.azi85chLpnPNdw6szXmt__ytLnSj_tLszC2HVeHFrTA
+
+### Create a new todo POST /TODOS (protected)
+POST http://localhost:5555/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDM3NzYwLCJleHAiOjE3ODcxMjQxNjB9.azi85chLpnPNdw6szXmt__ytLnSj_tLszC2HVeHFrTA
+Content-Type:application/json
+
+{
+  "task":"Finished coding the project"
+}
+
+### Update Todo PATCH /todos/:id
+PATCH http://localhost:5555/todos/2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg3MDM3NzYwLCJleHAiOjE3ODcxMjQxNjB9.azi85chLpnPNdw6szXmt__ytLnSj_tLszC2HVeHFrTA
+Content-Type: application/json
+
+{
+  "task": "Update the task finished coding the projeect",
+  "completed": 1
+}
