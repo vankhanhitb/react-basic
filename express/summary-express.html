@@ -1,0 +1,1664 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Tài liệu tổng quan kiến trúc, package, luồng dữ liệu và nhật ký lỗi của dự án Express Todo."
+  />
+  <title>Express Todo — Sổ tay kiến trúc &amp; gỡ lỗi</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #151713;
+      --muted: #62675e;
+      --paper: #f4f0e6;
+      --paper-strong: #fffdf7;
+      --line: #d6d0c2;
+      --night: #181c18;
+      --night-soft: #232923;
+      --accent: #e49a28;
+      --accent-deep: #9b5b00;
+      --good: #26734d;
+      --warn: #9a5800;
+      --bad: #a63f32;
+      --info: #315f80;
+      --sidebar: 17rem;
+      --content: 76rem;
+      --radius: 1.25rem;
+      --shadow: 0 28px 80px rgba(42, 35, 20, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(rgba(74, 62, 37, 0.045) 1px, transparent 1px),
+        var(--paper);
+      background-size: 100% 2rem;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    code,
+    pre,
+    .mono {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 2rem 1.4rem;
+      background: var(--night);
+      color: #f8f5ec;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 2.2rem;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 2.5rem;
+      height: 2.5rem;
+      place-items: center;
+      border-radius: 0.75rem;
+      background: var(--accent);
+      color: #221500;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+    }
+
+    .brand-copy strong,
+    .brand-copy span {
+      display: block;
+    }
+
+    .brand-copy strong {
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-copy span {
+      color: #aeb6aa;
+      font-size: 0.72rem;
+    }
+
+    .nav-label {
+      margin: 1.6rem 0 0.55rem;
+      color: #7f897b;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .sidebar nav {
+      display: grid;
+      gap: 0.18rem;
+    }
+
+    .sidebar nav a {
+      padding: 0.55rem 0.7rem;
+      border-left: 2px solid transparent;
+      color: #bfc6bb;
+      font-size: 0.84rem;
+      text-decoration: none;
+      transition: 160ms ease;
+    }
+
+    .sidebar nav a:hover,
+    .sidebar nav a[aria-current="true"] {
+      border-left-color: var(--accent);
+      color: #fffdf7;
+      transform: translateX(0.2rem);
+    }
+
+    .sidebar-note {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #8f998c;
+      font-size: 0.75rem;
+    }
+
+    .content {
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .hero {
+      position: relative;
+      min-height: min(48rem, 92vh);
+      overflow: hidden;
+      background: var(--night);
+      color: #fffdf7;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 76% 18%, rgba(228, 154, 40, 0.24), transparent 25%),
+        linear-gradient(135deg, transparent 55%, rgba(255, 255, 255, 0.025) 55%);
+      content: "";
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -8rem;
+      bottom: -12rem;
+      z-index: -1;
+      width: 36rem;
+      height: 36rem;
+      border: 1px solid rgba(228, 154, 40, 0.32);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 5rem rgba(228, 154, 40, 0.035),
+        0 0 0 10rem rgba(228, 154, 40, 0.025);
+      content: "";
+    }
+
+    .hero-inner,
+    .section-inner {
+      width: min(calc(100% - 3rem), var(--content));
+      margin-inline: auto;
+    }
+
+    .hero-inner {
+      display: grid;
+      min-height: inherit;
+      align-content: center;
+      padding: 5rem 0;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0 0 1.25rem;
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 850;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 2.5rem;
+      height: 1px;
+      background: currentColor;
+      content: "";
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 14ch;
+      margin-bottom: 1.5rem;
+      font-size: clamp(3.2rem, 7vw, 7.6rem);
+      font-weight: 760;
+      letter-spacing: -0.065em;
+      line-height: 0.92;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .hero-lede {
+      max-width: 46rem;
+      margin-bottom: 2.5rem;
+      color: #bdc5b9;
+      font-size: clamp(1rem, 1.7vw, 1.3rem);
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 2.85rem;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.05rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 0.7rem;
+      color: #fffdf7;
+      font-size: 0.82rem;
+      font-weight: 750;
+      text-decoration: none;
+      transition: 180ms ease;
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #241600;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+    }
+
+    .hero-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      max-width: 65rem;
+      margin-top: 5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.13);
+    }
+
+    .hero-flow div {
+      position: relative;
+      padding: 1rem 1rem 0 0;
+    }
+
+    .hero-flow div:not(:last-child)::after {
+      position: absolute;
+      top: -0.4rem;
+      right: 1rem;
+      color: var(--accent);
+      content: "→";
+    }
+
+    .hero-flow small,
+    .hero-flow strong {
+      display: block;
+    }
+
+    .hero-flow small {
+      color: #7f897b;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.68rem;
+    }
+
+    .hero-flow strong {
+      margin-top: 0.35rem;
+      font-size: 0.86rem;
+    }
+
+    section.doc-section {
+      padding: clamp(4.5rem, 8vw, 8rem) 0;
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: 1rem;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.6fr);
+      gap: 3rem;
+      align-items: end;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-number {
+      margin-bottom: 0.85rem;
+      color: var(--accent-deep);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+    }
+
+    h2 {
+      max-width: 18ch;
+      margin-bottom: 0;
+      font-size: clamp(2.2rem, 4.5vw, 4.8rem);
+      letter-spacing: -0.052em;
+      line-height: 0.98;
+    }
+
+    h3 {
+      margin-bottom: 0.65rem;
+      font-size: 1.18rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-intro {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-block: 1px solid var(--line);
+    }
+
+    .metric {
+      padding: 1.6rem 1rem;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child {
+      border-right: 0;
+    }
+
+    .metric strong,
+    .metric span {
+      display: block;
+    }
+
+    .metric strong {
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    .metric span {
+      margin-top: 0.45rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 0.4rem minmax(0, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+      padding: 1.1rem 1.25rem;
+      background: rgba(255, 253, 247, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 0.8rem;
+    }
+
+    .callout::before {
+      border-radius: 999px;
+      background: var(--accent);
+      content: "";
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .package-list,
+    .file-map,
+    .priority-list {
+      border-top: 1px solid var(--line);
+    }
+
+    .package-row,
+    .file-row,
+    .priority-row {
+      display: grid;
+      gap: 1.5rem;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .package-row {
+      grid-template-columns: 11rem 8rem minmax(0, 1fr) 8rem;
+    }
+
+    .file-row {
+      grid-template-columns: minmax(13rem, 0.75fr) minmax(0, 1.5fr);
+    }
+
+    .priority-row {
+      grid-template-columns: 4rem minmax(12rem, 0.75fr) minmax(0, 1.5fr);
+    }
+
+    .package-row code,
+    .file-row code {
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .package-row p,
+    .file-row p,
+    .priority-row p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      padding: 0.28rem 0.5rem;
+      border-radius: 999px;
+      background: #e8e1d2;
+      color: #514a3d;
+      font-size: 0.68rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .chip.good {
+      background: #dcecdf;
+      color: var(--good);
+    }
+
+    .chip.warn {
+      background: #f5e3c5;
+      color: var(--warn);
+    }
+
+    .chip.bad {
+      background: #f1d9d5;
+      color: var(--bad);
+    }
+
+    .architecture {
+      padding: clamp(1.2rem, 3vw, 2.5rem);
+      overflow-x: auto;
+      border-radius: var(--radius);
+      background: var(--night);
+      color: #f7f4eb;
+      box-shadow: var(--shadow);
+    }
+
+    .flow-row {
+      display: flex;
+      min-width: 58rem;
+      align-items: stretch;
+      gap: 0.6rem;
+    }
+
+    .flow-node {
+      flex: 1;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 0.8rem;
+      background: var(--night-soft);
+    }
+
+    .flow-node.accent {
+      border-color: rgba(228, 154, 40, 0.65);
+      background: #2a2418;
+    }
+
+    .flow-node small,
+    .flow-node strong,
+    .flow-node span {
+      display: block;
+    }
+
+    .flow-node small {
+      color: #788173;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.65rem;
+    }
+
+    .flow-node strong {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .flow-node span {
+      margin-top: 0.35rem;
+      color: #aab2a6;
+      font-size: 0.73rem;
+      line-height: 1.5;
+    }
+
+    .flow-arrow {
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .sequence-list {
+      display: grid;
+      margin-top: 2.5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .sequence-item {
+      display: grid;
+      grid-template-columns: 4.5rem 12rem minmax(0, 1fr);
+      gap: 1.4rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sequence-item .step {
+      color: var(--accent-deep);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-weight: 800;
+    }
+
+    .sequence-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .db-grid {
+      display: grid;
+      grid-template-columns: 1fr 6rem 1fr;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .db-table {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      background: var(--paper-strong);
+    }
+
+    .db-table h3 {
+      margin: 0;
+      padding: 1rem;
+      background: var(--night);
+      color: #fffdf7;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9rem;
+    }
+
+    .db-table ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .db-table li {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.65rem 1rem;
+      border-top: 1px solid var(--line);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.76rem;
+    }
+
+    .db-table li span:last-child {
+      color: var(--muted);
+    }
+
+    .relation {
+      color: var(--accent-deep);
+      text-align: center;
+    }
+
+    .relation strong,
+    .relation span {
+      display: block;
+    }
+
+    .relation strong {
+      font-family: monospace;
+      font-size: 1.5rem;
+    }
+
+    .relation span {
+      font-size: 0.7rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-block: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      min-width: 52rem;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    th,
+    td {
+      padding: 0.85rem 0.75rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    td code {
+      white-space: nowrap;
+    }
+
+    .code-block {
+      position: relative;
+      margin: 1.5rem 0;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.9rem;
+      background: var(--night);
+      color: #e9ede6;
+    }
+
+    .code-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #899386;
+      font-size: 0.68rem;
+    }
+
+    .copy-button {
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 750;
+    }
+
+    pre {
+      margin: 0;
+      padding: 1.1rem;
+      overflow-x: auto;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      tab-size: 2;
+    }
+
+    .issue-list {
+      display: grid;
+      border-top: 1px solid var(--line);
+    }
+
+    details.issue {
+      border-bottom: 1px solid var(--line);
+    }
+
+    details.issue summary {
+      display: grid;
+      grid-template-columns: 7rem minmax(15rem, 0.85fr) minmax(0, 1.4fr) 1.5rem;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem 0;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    details.issue summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.issue summary::after {
+      color: var(--accent-deep);
+      content: "+";
+      font-family: monospace;
+      font-size: 1.3rem;
+    }
+
+    details.issue[open] summary::after {
+      content: "−";
+    }
+
+    .issue-title {
+      font-weight: 780;
+    }
+
+    .issue-symptom {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .issue-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 0 0 1.5rem 8rem;
+    }
+
+    .issue-body p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .issue-body strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      color: var(--ink);
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .priority {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.72rem;
+      font-weight: 850;
+    }
+
+    .priority.p0 {
+      color: var(--bad);
+    }
+
+    .priority.p1 {
+      color: var(--warn);
+    }
+
+    .priority.p2 {
+      color: var(--info);
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 2rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .check-item {
+      display: grid;
+      grid-template-columns: 1.25rem minmax(0, 1fr);
+      gap: 0.75rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+
+    .check-item::before {
+      display: grid;
+      width: 1.1rem;
+      height: 1.1rem;
+      place-items: center;
+      margin-top: 0.2rem;
+      border: 1px solid var(--accent-deep);
+      border-radius: 0.25rem;
+      color: var(--accent-deep);
+      content: "✓";
+      font-size: 0.65rem;
+      font-weight: 900;
+    }
+
+    .glossary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0 2rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .term {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .term dt {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.8rem;
+      font-weight: 850;
+    }
+
+    .term dd {
+      margin: 0.3rem 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .footer {
+      padding: 4rem 0;
+      background: var(--night);
+      color: #aeb6aa;
+    }
+
+    .footer-inner {
+      display: flex;
+      width: min(calc(100% - 3rem), var(--content));
+      margin-inline: auto;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .footer strong {
+      display: block;
+      color: #fffdf7;
+      font-size: 1.1rem;
+    }
+
+    .footer p {
+      max-width: 44rem;
+      margin: 0.4rem 0 0;
+      font-size: 0.8rem;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(1rem);
+      transition: opacity 500ms ease, transform 500ms ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 980px) {
+      .shell {
+        display: block;
+      }
+
+      .sidebar {
+        position: sticky;
+        z-index: 20;
+        top: 0;
+        display: flex;
+        width: 100%;
+        height: auto;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        overflow-x: auto;
+      }
+
+      .brand {
+        flex: 0 0 auto;
+        margin: 0 0.5rem 0 0;
+      }
+
+      .brand-copy span,
+      .nav-label,
+      .sidebar-note {
+        display: none;
+      }
+
+      .sidebar nav {
+        display: flex;
+        flex: 0 0 auto;
+      }
+
+      .sidebar nav a {
+        white-space: nowrap;
+        border-bottom: 2px solid transparent;
+        border-left: 0;
+      }
+
+      .sidebar nav a:hover,
+      .sidebar nav a[aria-current="true"] {
+        border-bottom-color: var(--accent);
+        transform: none;
+      }
+
+      .hero {
+        min-height: 45rem;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .hero-inner,
+      .section-inner,
+      .footer-inner {
+        width: min(calc(100% - 2rem), var(--content));
+      }
+
+      .hero-inner {
+        padding: 4rem 0;
+      }
+
+      .hero-flow {
+        grid-template-columns: 1fr;
+        margin-top: 3rem;
+      }
+
+      .hero-flow div:not(:last-child)::after {
+        top: auto;
+        right: auto;
+        bottom: -0.7rem;
+        left: 0;
+        content: "↓";
+      }
+
+      .section-head,
+      .db-grid,
+      .issue-body {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric:nth-child(2) {
+        border-right: 0;
+      }
+
+      .metric:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .package-row,
+      .file-row,
+      .priority-row,
+      .sequence-item {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+      }
+
+      .relation {
+        transform: rotate(90deg);
+      }
+
+      details.issue summary {
+        grid-template-columns: 6.4rem minmax(0, 1fr) 1.3rem;
+      }
+
+      .issue-symptom {
+        display: none;
+      }
+
+      .issue-body {
+        padding-left: 0;
+      }
+
+      .checklist,
+      .glossary {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        display: block;
+      }
+
+      .footer .mono {
+        display: block;
+        margin-top: 1.2rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        font-size: 10pt;
+      }
+
+      .shell {
+        display: block;
+      }
+
+      .sidebar,
+      .hero-actions,
+      .copy-button {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 2rem 0;
+      }
+
+      section.doc-section {
+        padding: 2rem 0;
+        break-inside: avoid;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Điều hướng tài liệu">
+      <a class="brand" href="#top">
+        <span class="brand-mark">E</span>
+        <span class="brand-copy">
+          <strong>Express Todo</strong>
+          <span>Sổ tay dự án · 18.08.2026</span>
+        </span>
+      </a>
+
+      <p class="nav-label">Tổng quan</p>
+      <nav>
+        <a href="#snapshot">Ảnh chụp dự án</a>
+        <a href="#packages">Package &amp; runtime</a>
+        <a href="#structure">Cấu trúc source</a>
+        <a href="#architecture">Kiến trúc dữ liệu</a>
+        <a href="#flows">Luồng nghiệp vụ</a>
+        <a href="#api">Hợp đồng API</a>
+      </nav>
+
+      <p class="nav-label">Chất lượng</p>
+      <nav>
+        <a href="#issues">Nhật ký lỗi</a>
+        <a href="#review">Review hiện tại</a>
+        <a href="#testing">Cách kiểm thử</a>
+        <a href="#glossary">Thuật ngữ</a>
+      </nav>
+
+      <p class="sidebar-note">
+        Tài liệu đọc độc lập. Không thay thế source code, migration hay test tự động.
+      </p>
+    </aside>
+
+    <main class="content" id="top">
+      <header class="hero">
+        <div class="hero-inner">
+          <p class="eyebrow">Architecture field guide</p>
+          <h1>Hiểu dữ liệu trước khi <span>sửa code.</span></h1>
+          <p class="hero-lede">
+            Bản đồ kỹ thuật bằng tiếng Việt cho dự án Todo: dependency nào làm gì,
+            request đi qua đâu, JWT bảo vệ route thế nào, SQLite giữ dữ liệu ra sao
+            và vì sao những lỗi đã gặp xuất hiện.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#architecture">Xem luồng dữ liệu</a>
+            <a class="button" href="#issues">Tra cứu lỗi</a>
+          </div>
+
+          <div class="hero-flow" aria-label="Luồng dữ liệu tổng quát">
+            <div><small>01</small><strong>Browser UI</strong></div>
+            <div><small>02</small><strong>Fetch / REST</strong></div>
+            <div><small>03</small><strong>Express route</strong></div>
+            <div><small>04</small><strong>Auth middleware</strong></div>
+            <div><small>05</small><strong>SQLite file</strong></div>
+          </div>
+        </div>
+      </header>
+
+      <section class="doc-section" id="snapshot">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">01 / SNAPSHOT</p>
+              <h2>Dự án đang có gì?</h2>
+            </div>
+            <p class="section-intro">
+              Đây là một ứng dụng Todo full-stack nhỏ: frontend thuần HTML/CSS/JS,
+              Express 5 làm HTTP server, JWT làm access token và SQLite lưu dữ liệu.
+            </p>
+          </div>
+
+          <div class="metrics" aria-label="Số liệu dự án">
+            <div class="metric"><strong>4</strong><span>npm package trực tiếp</span></div>
+            <div class="metric"><strong>108</strong><span>package entry trong lockfile</span></div>
+            <div class="metric"><strong>2</strong><span>bảng SQLite: users, todos</span></div>
+            <div class="metric"><strong>7</strong><span>route chính tính cả trang chủ</span></div>
+          </div>
+
+          <div class="callout">
+            <p>
+              <strong>Source of truth hiện tại:</strong> <code>src/db.js</code> định nghĩa schema,
+              <code>src/server.js</code> ghép middleware/router, còn <code>public/index.html</code>
+              vừa render UI vừa giữ toàn bộ state và fetch logic phía trình duyệt.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="packages">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">02 / DEPENDENCIES</p>
+              <h2>Package được cài và vai trò.</h2>
+            </div>
+            <p class="section-intro">
+              Chỉ bốn package được khai báo trực tiếp. Các package còn lại trong
+              <code>node_modules</code> là dependency gián tiếp do npm tự giải quyết.
+            </p>
+          </div>
+
+          <div class="package-list">
+            <div class="package-row">
+              <code>express</code><span class="mono">5.2.1</span>
+              <p>Tạo server, parse JSON, serve static file, định nghĩa router và chuỗi middleware.</p>
+              <span class="chip good">Đang dùng</span>
+            </div>
+            <div class="package-row">
+              <code>bcryptjs</code><span class="mono">3.0.3</span>
+              <p>Hash password khi đăng ký và so sánh password với hash khi đăng nhập.</p>
+              <span class="chip good">Đang dùng</span>
+            </div>
+            <div class="package-row">
+              <code>jsonwebtoken</code><span class="mono">9.0.3</span>
+              <p>Ký JWT sau đăng ký/đăng nhập và xác minh JWT trước các route Todo.</p>
+              <span class="chip good">Đang dùng</span>
+            </div>
+            <div class="package-row">
+              <code>nodemon</code><span class="mono">3.1.14</span>
+              <p>Tool restart server khi file đổi, nhưng script hiện dùng <code>node --watch</code>, nên package này không được gọi.</p>
+              <span class="chip warn">Đang dư</span>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 3rem;">Module có sẵn trong Node.js</h3>
+          <div class="package-list">
+            <div class="package-row">
+              <code>node:sqlite</code><span class="mono">built-in</span>
+              <p><code>DatabaseSync</code> mở <code>todo.db</code>, tạo bảng và chạy prepared statement.</p>
+              <span class="chip good">Runtime</span>
+            </div>
+            <div class="package-row">
+              <code>node:path</code><span class="mono">built-in</span>
+              <p>Tạo đường dẫn tuyệt đối đến thư mục <code>public</code> để Express serve asset.</p>
+              <span class="chip good">Runtime</span>
+            </div>
+            <div class="package-row">
+              <code>node:url</code><span class="mono">built-in</span>
+              <p>Chuyển <code>import.meta.url</code> thành đường dẫn file trong môi trường ESM.</p>
+              <span class="chip good">Runtime</span>
+            </div>
+          </div>
+
+          <div class="callout">
+            <p>
+              <strong>Điểm cần chỉnh package metadata:</strong> mô tả vẫn ghi PostgreSQL/Prisma,
+              <code>main</code> trỏ tới <code>index.js</code> không tồn tại, script <code>test</code>
+              chưa chạy test thật và <code>nodemon</code> nên chuyển sang devDependency hoặc gỡ nếu không dùng.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="structure">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">03 / SOURCE MAP</p>
+              <h2>Mỗi file sở hữu một phần của hệ thống.</h2>
+            </div>
+            <p class="section-intro">
+              Đọc dự án theo trách nhiệm giúp tránh đặt validation, authentication hay SQL sai tầng.
+            </p>
+          </div>
+
+          <div class="file-map">
+            <div class="file-row"><code>src/server.js</code><p>Composition root: tạo app, gắn JSON/static middleware, mount router và mở port.</p></div>
+            <div class="file-row"><code>src/db.js</code><p>Database boundary: mở file SQLite và bảo đảm hai bảng tồn tại.</p></div>
+            <div class="file-row"><code>src/routers/authRouters.js</code><p>Use case đăng ký/đăng nhập: validate input, bcrypt, SQL và phát JWT.</p></div>
+            <div class="file-row"><code>src/middleware/authMiddleware.js</code><p>Security gate: đọc token, verify chữ ký/hạn dùng, kiểm tra user còn tồn tại và gắn <code>req.userId</code>.</p></div>
+            <div class="file-row"><code>src/routers/todoRouters.js</code><p>CRUD Todo cho user đã xác thực.</p></div>
+            <div class="file-row"><code>public/index.html</code><p>UI, state trong memory, localStorage token, fetch và render Todo.</p></div>
+            <div class="file-row"><code>public/styles.css</code><p>Layout riêng của ứng dụng Todo.</p></div>
+            <div class="file-row"><code>public/fanta.css</code><p>Base design system: màu, typography, button, input và responsive defaults.</p></div>
+            <div class="file-row"><code>todo.rest</code><p>Bộ request thủ công cho register, login và CRUD Todo.</p></div>
+            <div class="file-row"><code>test.rest</code><p>Request cũ của giai đoạn demo <code>/api/data</code>; hiện không còn khớp route chính.</p></div>
+            <div class="file-row"><code>todo.db</code><p>Database SQLite thật, tồn tại qua restart. Hiện file này đang được Git theo dõi.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="architecture">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">04 / ARCHITECTURE</p>
+              <h2>Request đi qua hệ thống như thế nào?</h2>
+            </div>
+            <p class="section-intro">
+              Route public đi thẳng tới auth router. Route Todo phải vượt qua auth middleware
+              trước khi được phép chạy SQL.
+            </p>
+          </div>
+
+          <div class="architecture" aria-label="Sơ đồ kiến trúc request">
+            <div class="flow-row">
+              <div class="flow-node accent"><small>CLIENT</small><strong>index.html</strong><span>UI state, fetch, localStorage</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node"><small>HTTP</small><strong>Express app</strong><span>json() + static()</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node"><small>PUBLIC</small><strong>/auth</strong><span>register + login</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node"><small>PROTECTED</small><strong>authMiddleware</strong><span>verify token + user</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node accent"><small>DATA</small><strong>todo.db</strong><span>users + todos</span></div>
+            </div>
+          </div>
+
+          <div class="db-grid" style="margin-top: 3rem;">
+            <article class="db-table">
+              <h3>users</h3>
+              <ul>
+                <li><span>id</span><span>PK · integer</span></li>
+                <li><span>username</span><span>unique · text</span></li>
+                <li><span>password</span><span>bcrypt hash</span></li>
+              </ul>
+            </article>
+            <div class="relation"><strong>1 → N</strong><span>user_id</span></div>
+            <article class="db-table">
+              <h3>todos</h3>
+              <ul>
+                <li><span>id</span><span>PK · integer</span></li>
+                <li><span>user_id</span><span>FK → users.id</span></li>
+                <li><span>task</span><span>text</span></li>
+                <li><span>completed</span><span>boolean · default 0</span></li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="callout">
+            <p>
+              <strong>Ownership:</strong> <code>req.userId</code> phải là nguồn duy nhất để scope dữ liệu.
+              Không nhận <code>user_id</code> từ browser vì client có thể giả mạo ID của user khác.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="flows">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">05 / DATA FLOWS</p>
+              <h2>Bốn luồng cần hiểu trước khi sửa.</h2>
+            </div>
+            <p class="section-intro">
+              Mỗi luồng mô tả input, boundary chịu trách nhiệm, state thay đổi và response trở về UI.
+            </p>
+          </div>
+
+          <h3>Đăng ký tài khoản</h3>
+          <div class="sequence-list">
+            <div class="sequence-item"><span class="step">01</span><strong>Browser</strong><p>POST JSON gồm <code>username</code> và <code>password</code> tới <code>/auth/register</code>.</p></div>
+            <div class="sequence-item"><span class="step">02</span><strong>Express JSON</strong><p>Chuyển request body thành <code>req.body</code>. Header phải là <code>Content-Type: application/json</code>.</p></div>
+            <div class="sequence-item"><span class="step">03</span><strong>Validation</strong><p>Từ chối username rỗng và password ngắn hơn 8 ký tự.</p></div>
+            <div class="sequence-item"><span class="step">04</span><strong>bcrypt</strong><p>Biến password thành hash một chiều trước khi lưu.</p></div>
+            <div class="sequence-item"><span class="step">05</span><strong>SQLite</strong><p>Tạo user, lấy <code>lastInsertRowid</code>, rồi tạo Todo mặc định dùng ID đó.</p></div>
+            <div class="sequence-item"><span class="step">06</span><strong>JWT</strong><p>Ký payload <code>{ id }</code> với <code>JWT_SECRET</code>, hết hạn sau 24 giờ.</p></div>
+            <div class="sequence-item"><span class="step">07</span><strong>Response</strong><p>Trả <code>201</code> cùng token; browser lưu token vào localStorage.</p></div>
+          </div>
+
+          <h3 style="margin-top: 3rem;">Đăng nhập</h3>
+          <div class="sequence-list">
+            <div class="sequence-item"><span class="step">01</span><strong>Lookup</strong><p>Tìm user theo username bằng prepared statement.</p></div>
+            <div class="sequence-item"><span class="step">02</span><strong>Compare</strong><p><code>bcrypt.compareSync</code> so password nhập vào với hash trong database.</p></div>
+            <div class="sequence-item"><span class="step">03</span><strong>Issue token</strong><p>Nếu khớp, tạo JWT mới và trả về browser.</p></div>
+            <div class="sequence-item"><span class="step">04</span><strong>Dashboard</strong><p>Browser lưu token, fetch danh sách Todo và render giao diện đã xác thực.</p></div>
+          </div>
+
+          <h3 style="margin-top: 3rem;">Request Todo được bảo vệ</h3>
+          <div class="architecture">
+            <div class="flow-row">
+              <div class="flow-node"><small>REQUEST</small><strong>Authorization</strong><span>JWT từ localStorage</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node"><small>VERIFY</small><strong>jwt.verify</strong><span>signature + exp</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node"><small>IDENTITY</small><strong>SELECT users</strong><span>user còn tồn tại?</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node accent"><small>CONTEXT</small><strong>req.userId</strong><span>identity server tin cậy</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node"><small>QUERY</small><strong>todos</strong><span>scope theo user_id</span></div>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 3rem;">Đăng xuất</h3>
+          <p class="section-intro" style="max-width: 52rem;">
+            <code>logout()</code> xóa token khỏi biến và localStorage, reset state, ẩn dashboard và
+            hiện form login. Đây là client-side logout: JWT cũ vẫn hợp lệ về mặt mật mã đến khi hết hạn,
+            nhưng browser không còn giữ để gửi nữa.
+          </p>
+        </div>
+      </section>
+
+      <section class="doc-section" id="api">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">06 / API CONTRACT</p>
+              <h2>Method + path + input phải khớp tuyệt đối.</h2>
+            </div>
+            <p class="section-intro">
+              Express không chỉ match URL; HTTP method cũng là một phần của contract.
+              <code>GET /login</code> và <code>POST /login</code> là hai route khác nhau.
+            </p>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Input</th><th>Response chính</th><th>Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td><code>GET</code></td><td><code>/</code></td><td>Không</td><td>—</td><td>HTML</td><td>Được static middleware phục vụ trước route tường minh.</td></tr>
+                <tr><td><code>POST</code></td><td><code>/auth/register</code></td><td>Không</td><td>username, password</td><td><code>201</code> + token</td><td>Nên map username trùng thành <code>409</code>.</td></tr>
+                <tr><td><code>POST</code></td><td><code>/auth/login</code></td><td>Không</td><td>username, password</td><td>token</td><td>Đăng nhập thành công nên dùng <code>200</code>, không phải <code>201</code>.</td></tr>
+                <tr><td><code>GET</code></td><td><code>/todos</code></td><td>JWT</td><td>—</td><td>Todo[]</td><td>Đã scope theo <code>req.userId</code>.</td></tr>
+                <tr><td><code>POST</code></td><td><code>/todos</code></td><td>JWT</td><td>task</td><td><code>201</code> + Todo</td><td>Validation task đã tồn tại.</td></tr>
+                <tr><td><code>PATCH</code></td><td><code>/todos/:id</code></td><td>JWT</td><td>task, completed</td><td>Todo</td><td>Hiện chưa scope update theo <code>user_id</code>.</td></tr>
+                <tr><td><code>DELETE</code></td><td><code>/todos/:id</code></td><td>JWT</td><td>—</td><td>message</td><td>Query đã scope user; status <code>301</code> cần đổi.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-block">
+            <div class="code-head"><span>REST request chuẩn</span><button class="copy-button" type="button">Sao chép</button></div>
+            <pre><code>POST http://localhost:5555/todos
+Authorization: &lt;token-moi&gt;
+Content-Type: application/json
+
+{
+  "task": "Hoàn thành tài liệu Express"
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="issues">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">07 / ISSUE LOG</p>
+              <h2>Lỗi đã gặp, nguyên nhân và bài học.</h2>
+            </div>
+            <p class="section-intro">
+              Mở từng mục để xem symptom → root cause → fix. Trạng thái phản ánh source hiện tại tại thời điểm tạo tài liệu.
+            </p>
+          </div>
+
+          <div class="issue-list">
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">ESM không tìm thấy module</span><span class="issue-symptom">ERR_MODULE_NOT_FOUND cho authRouters hoặc db</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Project dùng <code>"type": "module"</code>; relative import của Node ESM cần đuôi <code>.js</code>.</p><p><strong>Cách sửa</strong>Dùng <code>./routers/authRouters.js</code> và <code>../db.js</code>. Luôn kiểm tra path, casing và extension.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">req.body là undefined</span><span class="issue-symptom">Cannot destructure username hoặc bcrypt nhận undefined</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong><code>express.json()</code> bị comment hoặc được đặt sau router.</p><p><strong>Cách sửa</strong>Gắn <code>app.use(express.json())</code> trước <code>app.use('/auth', ...)</code>; vẫn phải validate runtime input.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">REST Client không parse body</span><span class="issue-symptom">Header token error hoặc “Task is required” dù có task</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Dùng HTTPS với HTTP server, thiếu dòng trống, sai <code>Content-Type</code> hoặc không có <code>###</code> giữa request.</p><p><strong>Cách sửa</strong>Dùng HTTP, header đúng chính tả, một dòng trống trước JSON và tách request bằng <code>###</code>.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">Sai HTTP method</span><span class="issue-symptom">404 Cannot POST /auth/login</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Client gửi POST trong khi router từng khai báo GET.</p><p><strong>Cách sửa</strong>Đăng nhập dùng <code>router.post('/login')</code>. Method và path phải khớp ở cả hai phía.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">SQL INSERT sai cú pháp</span><span class="issue-symptom">near “VALUE” hoặc near “)” syntax error</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Dùng <code>VALUE</code>, thiếu placeholder hoặc gọi bảng singular/plural không thống nhất.</p><p><strong>Cách sửa</strong>Dùng <code>INSERT INTO users (...) VALUES (?, ?)</code>; thống nhất <code>users</code> và <code>todos</code>.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">Gửi response hai lần</span><span class="issue-symptom">ERR_HTTP_HEADERS_SENT sau register</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong><code>res.json()</code> xong vẫn chạy tới <code>res.sendStatus()</code>.</p><p><strong>Cách sửa</strong>Mỗi branch chỉ gửi một response và <code>return res.status(201).json({ token })</code>.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">Frontend và server lệch URL</span><span class="issue-symptom">Auth thành công nhưng dashboard không hiện</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Frontend fetch <code>/todos</code>, server từng mount <code>/todo</code>.</p><p><strong>Cách sửa</strong>Thống nhất resource plural <code>/todos</code> cho cả frontend, REST file và server.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">SQLite parameter 2 không bind được</span><span class="issue-symptom">Provided value cannot be bound to SQLite parameter 2</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Header từng viết sai khiến task thành <code>undefined</code>; parameter 2 chính là task.</p><p><strong>Cách sửa</strong>Sửa <code>Content-Type</code> và validate <code>typeof task === 'string'</code> trước SQL.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">JSON có trailing comma</span><span class="issue-symptom">Expected double-quoted property name</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>JSON không cho phép dấu phẩy sau property cuối cùng.</p><p><strong>Cách sửa</strong>Bỏ dấu phẩy trước <code>}</code>. Phân biệt object literal JavaScript và JSON wire format.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">Foreign key thất bại sau restart</span><span class="issue-symptom">JWT id tồn tại nhưng users row không còn</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Database từng dùng <code>:memory:</code> trong khi token sống 24 giờ; restart xóa user nhưng token còn.</p><p><strong>Cách sửa</strong>Chuyển sang <code>todo.db</code>, dùng <code>IF NOT EXISTS</code> và middleware kiểm tra user vẫn tồn tại.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">Add Todo che giấu lỗi</span><span class="issue-symptom">Input bị xóa dù POST thất bại</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Frontend từng không kiểm tra <code>response.ok</code>.</p><p><strong>Cách sửa</strong>Parse response, throw khi không OK, chỉ clear input sau 201 và hiển thị message có ích.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip good">Đã sửa</span><span class="issue-title">Logout chưa có behavior</span><span class="issue-symptom">Token và dashboard vẫn còn sau khi bấm</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong><code>logout()</code> ban đầu chỉ là placeholder.</p><p><strong>Cách sửa</strong>Xóa localStorage token, reset state/form, ẩn dashboard và hiện login screen.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip warn">Môi trường</span><span class="issue-title">SQLite ExperimentalWarning</span><span class="issue-symptom">Stack trace dài trong Node 22</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong><code>node:sqlite</code> còn experimental trong Node 22; <code>--trace-warnings</code> từng mở toàn bộ stack.</p><p><strong>Cách sửa</strong>Không xem đây là app crash. Giữ Node 22 hiện dùng; bỏ trace nếu chỉ muốn log ngắn. Không đổi Node mù quáng.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip warn">Môi trường</span><span class="issue-title">Nhiều Node installation</span><span class="issue-symptom">dyld thiếu ICU khi chọn “system”</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong><code>.zshrc</code> ưu tiên Homebrew Node 14 cũ, liên kết tới ICU đã bị thay.</p><p><strong>Cách sửa</strong>Dùng NVM Node 22 đã xác minh. Gỡ PATH Node 14 chỉ sau khi review shell config; không tạo symlink ICU giả.</p></div>
+            </details>
+            <details class="issue">
+              <summary><span class="chip warn">Môi trường</span><span class="issue-title">npm config warning</span><span class="issue-symptom">Unknown user config tarball/node_gyp/msvs_version</span></summary>
+              <div class="issue-body"><p><strong>Nguyên nhân</strong>Ba key cũ nằm trong user-level <code>~/.npmrc</code>, không phải package.json dự án.</p><p><strong>Cách sửa</strong>Xóa đúng ba key bằng npm config hoặc sửa file có backup; không đụng config dự án.</p></div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="review">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">08 / CURRENT REVIEW</p>
+              <h2>Những việc còn nên xử lý.</h2>
+            </div>
+            <p class="section-intro">
+              Đây là backlog đề xuất, chưa được sửa trong source. Ưu tiên bảo mật và ownership trước polish.
+            </p>
+          </div>
+
+          <div class="priority-list">
+            <div class="priority-row"><span class="priority p0">P0</span><strong>Scope PATCH theo owner</strong><p>Update hiện dùng <code>WHERE id = ?</code>. User đã đăng nhập có thể sửa Todo của user khác nếu đoán ID. Thêm <code>AND user_id = ?</code> với <code>req.userId</code>.</p></div>
+            <div class="priority-row"><span class="priority p0">P0</span><strong>Chặn stored XSS</strong><p><code>renderTodos()</code> đưa <code>todo.task</code> trực tiếp vào <code>innerHTML</code>. Task chứa HTML/script có thể thực thi. Render bằng DOM + <code>textContent</code> hoặc escape output.</p></div>
+            <div class="priority-row"><span class="priority p0">P0</span><strong>Không track database/token</strong><p><code>todo.db</code> đang được Git theo dõi và <code>todo.rest</code> chứa JWT thật. Ignore database runtime, bỏ token khỏi file và rotate secret/token nếu repo từng chia sẻ.</p></div>
+            <div class="priority-row"><span class="priority p1">P1</span><strong>Chuẩn hóa status code</strong><p>Login nên trả 200, PATCH nên trả 200, DELETE nên trả 200/204; <code>301</code> là redirect và không phù hợp.</p></div>
+            <div class="priority-row"><span class="priority p1">P1</span><strong>Kiểm tra affected rows</strong><p>PATCH/DELETE cần đọc <code>result.changes</code>; trả 404 nếu không có row thuộc user bị thay đổi.</p></div>
+            <div class="priority-row"><span class="priority p1">P1</span><strong>Validate completed và id</strong><p>Không bind <code>undefined</code>; chỉ chấp nhận ID nguyên dương và completed là 0/1 hoặc boolean được normalize.</p></div>
+            <div class="priority-row"><span class="priority p1">P1</span><strong>Transaction khi register</strong><p>User và Todo mặc định cần atomic. Nếu insert Todo thất bại, không nên để lại user nửa chừng.</p></div>
+            <div class="priority-row"><span class="priority p1">P1</span><strong>Auth error an toàn</strong><p>Dùng message chung cho “user không tồn tại” và “password sai”; map username trùng thành 409 thay vì 500.</p></div>
+            <div class="priority-row"><span class="priority p1">P1</span><strong>Bearer token contract</strong><p>Hiện app gửi raw token. Chuẩn phổ biến là <code>Authorization: Bearer &lt;token&gt;</code>; client và middleware phải đổi cùng lúc.</p></div>
+            <div class="priority-row"><span class="priority p1">P1</span><strong>Sửa frontend auth errors</strong><p>Code khai báo <code>textError</code> nhưng vẫn dùng global <code>error</code>; cần thống nhất và kiểm tra <code>response.ok</code> cho login/register.</p></div>
+            <div class="priority-row"><span class="priority p2">P2</span><strong>Tránh fetch lặp</strong><p>Sau auth, code gọi <code>fetchTodos()</code> rồi <code>showDashboard()</code> lại fetch lần nữa. Chỉ giữ một owner cho thao tác load.</p></div>
+            <div class="priority-row"><span class="priority p2">P2</span><strong>Sửa static path</strong><p>Route tường minh dùng <code>src/public/index.html</code> sai vị trí. Static middleware đang che lỗi. Dùng <code>../public/index.html</code> hoặc bỏ route dư.</p></div>
+            <div class="priority-row"><span class="priority p2">P2</span><strong>HTML &amp; metadata</strong><p>Đổi <code>className</code> thành <code>class</code>; cập nhật package description/main/test và xóa code demo đã comment.</p></div>
+          </div>
+
+          <div class="callout">
+            <p>
+              <strong>Ranh giới quan trọng:</strong> JWT xác thực “ai đang gọi”; query có
+              <code>user_id</code> mới quyết định “người đó được sửa record nào”. Authentication
+              không tự động tạo authorization ở cấp tài nguyên.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="testing">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">09 / TESTING</p>
+              <h2>Kiểm thử theo luồng, không chỉ theo endpoint.</h2>
+            </div>
+            <p class="section-intro">
+              Dự án chưa có test tự động thực sự. REST Client hữu ích để học contract,
+              nhưng cần thêm test repeatable để bắt regression.
+            </p>
+          </div>
+
+          <div class="code-block">
+            <div class="code-head"><span>Khởi động với Node đã xác minh</span><button class="copy-button" type="button">Sao chép</button></div>
+            <pre><code>nvm use 22
+node --version
+npm run dev</code></pre>
+          </div>
+
+          <h3>Thứ tự test thủ công</h3>
+          <div class="checklist">
+            <div class="check-item">Mở <code>http://localhost:5555</code>, không dùng HTTPS.</div>
+            <div class="check-item">Đăng ký user mới và xác nhận nhận token.</div>
+            <div class="check-item">Đăng nhập đúng và sai password; kiểm tra status/message.</div>
+            <div class="check-item">GET Todo không token phải trả 401.</div>
+            <div class="check-item">GET Todo với token hợp lệ chỉ trả record của user đó.</div>
+            <div class="check-item">POST task rỗng phải trả 400; task hợp lệ trả 201.</div>
+            <div class="check-item">PATCH ID không tồn tại phải trả 404 sau khi hoàn thiện.</div>
+            <div class="check-item">User A không thể PATCH/DELETE Todo của user B.</div>
+            <div class="check-item">Logout xóa token và quay lại login screen.</div>
+            <div class="check-item">Restart server vẫn giữ user/Todo trong <code>todo.db</code>.</div>
+            <div class="check-item">Task chứa <code>&lt;img onerror=...&gt;</code> phải hiển thị như text, không chạy code.</div>
+            <div class="check-item">Token hết hạn/stale phải đưa UI về trạng thái đăng nhập.</div>
+          </div>
+
+          <h3 style="margin-top: 3rem;">Phân biệt lớp kiểm thử</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Lớp</th><th>Mục tiêu</th><th>Ví dụ</th><th>Trạng thái</th></tr></thead>
+              <tbody>
+                <tr><td>Static</td><td>Syntax/import</td><td><code>node --check</code></td><td>Chưa có script</td></tr>
+                <tr><td>Unit</td><td>Validation/helper</td><td>normalize task, token parser</td><td>Chưa có</td></tr>
+                <tr><td>Integration</td><td>Router + SQLite</td><td>register → login → CRUD</td><td>Đang test thủ công</td></tr>
+                <tr><td>Browser</td><td>UI + network + state</td><td>login, add, update, logout</td><td>Chưa tự động</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="glossary">
+        <div class="section-inner reveal">
+          <div class="section-head">
+            <div>
+              <p class="section-number">10 / GLOSSARY</p>
+              <h2>Từ khóa cần nhớ.</h2>
+            </div>
+            <p class="section-intro">Một từ khóa tốt phải gắn với trách nhiệm cụ thể trong source hiện tại.</p>
+          </div>
+
+          <dl class="glossary">
+            <div class="term"><dt>Middleware</dt><dd>Hàm chạy giữa request và route; có thể sửa request, trả response hoặc gọi next.</dd></div>
+            <div class="term"><dt>Router</dt><dd>Nhóm handler theo method/path và một domain như auth hoặc todos.</dd></div>
+            <div class="term"><dt>JWT</dt><dd>Token có chữ ký chứa claims; được verify, không mặc định được mã hóa.</dd></div>
+            <div class="term"><dt>Claim</dt><dd>Dữ liệu trong JWT, ví dụ user id, issued-at và expiration.</dd></div>
+            <div class="term"><dt>Authentication</dt><dd>Xác định người gọi là ai.</dd></div>
+            <div class="term"><dt>Authorization</dt><dd>Quyết định người đó được đọc/sửa record nào.</dd></div>
+            <div class="term"><dt>Prepared statement</dt><dd>SQL có placeholder; tách code SQL khỏi giá trị để bind an toàn.</dd></div>
+            <div class="term"><dt>Foreign key</dt><dd>Ràng buộc bảo đảm Todo chỉ tham chiếu tới user tồn tại.</dd></div>
+            <div class="term"><dt>Transaction</dt><dd>Nhiều thao tác database thành một đơn vị: cùng thành công hoặc cùng rollback.</dd></div>
+            <div class="term"><dt>Runtime validation</dt><dd>Kiểm tra dữ liệu thật khi request chạy; không tin JSON từ client.</dd></div>
+            <div class="term"><dt>HTTP contract</dt><dd>Method, path, header, body và response mà client/server cùng tuân thủ.</dd></div>
+            <div class="term"><dt>Stored XSS</dt><dd>Dữ liệu độc hại được lưu rồi chèn lại bằng innerHTML và thực thi trong browser.</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div>
+            <strong>Express Todo · Tài liệu tham chiếu nội bộ</strong>
+            <p>
+              Snapshot dựa trên source ngày 18.08.2026. Mỗi lần route, schema hoặc auth contract đổi,
+              hãy cập nhật tài liệu cùng lúc và xác minh lại bằng runtime test.
+            </p>
+          </div>
+          <span class="mono">summary-express.html</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealElements = document.querySelectorAll('.reveal');
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      revealElements.forEach((element) => element.classList.add('visible'));
+    } else {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08 });
+
+      revealElements.forEach((element) => revealObserver.observe(element));
+    }
+
+    const sectionLinks = [...document.querySelectorAll('.sidebar nav a')];
+    const sections = sectionLinks
+      .map((link) => document.querySelector(link.getAttribute('href')))
+      .filter(Boolean);
+
+    if ('IntersectionObserver' in window) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          sectionLinks.forEach((link) => {
+            const active = link.getAttribute('href') === `#${entry.target.id}`;
+            link.setAttribute('aria-current', active ? 'true' : 'false');
+          });
+        });
+      }, { rootMargin: '-25% 0px -65% 0px' });
+
+      sections.forEach((section) => sectionObserver.observe(section));
+    }
+
+    document.querySelectorAll('.copy-button').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const code = button.closest('.code-block')?.querySelector('code')?.innerText ?? '';
+        try {
+          await navigator.clipboard.writeText(code);
+          const previous = button.innerText;
+          button.innerText = 'Đã chép';
+          window.setTimeout(() => { button.innerText = previous; }, 1200);
+        } catch {
+          button.innerText = 'Không thể chép';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
