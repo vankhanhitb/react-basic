@@ -82,10 +82,12 @@
 
     // PAGE RENDERING LOGIC
     async function showDashboard() {
-        nav.style.display = 'block'
-        header.style.display = 'flex'
-        main.style.display = 'flex'
-        authContent.style.display = 'none'
+        nav.style.display = 'block';
+        header.style.display = 'flex';
+        header.style.justifyContent = 'center';
+        header.style.alignContent = 'center';
+        main.style.display = 'flex';
+        authContent.style.display = 'none';
 
         await fetchTodos()
     }
