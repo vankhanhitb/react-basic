@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useDispatch } from "react-redux";
 import { addToCartWithQuantity } from "../../features/cart/cartSlice";
 import { showModal } from "../../features/cart/modalSlide";
@@ -32,35 +32,35 @@ export default function ProductModal({ product, onClose }: PropsType) {
   const panelRef = useRef<HTMLDivElement>(null);
   const isClosingRef = useRef(false);
 
-  const { contextSafe } = useGSAP(() => {
-    const timeline = gsap.timeline();
+  // const { contextSafe } = useGSAP(() => {
+  //   const timeline = gsap.timeline();
       
-    timeline.fromTo(
-          modalRef.current,
-          { autoAlpha: 0 },
-          {
-            autoAlpha: 1,
-            duration: 0.2,
-            ease: "power2.out",
-          },
-        ).fromTo(
-          panelRef.current,
-          {
-            autoAlpha: 0,
-            scale: 0.5,
-          },
-          {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.35,
-            ease: "power3.out",
-            transformOrigin: "center center",
-          },
-          "<",
-        );
-    },
-    { scope: modalRef },
-  );
+  //   timeline.fromTo(
+  //         modalRef.current,
+  //         { autoAlpha: 0 },
+  //         {
+  //           autoAlpha: 1,
+  //           duration: 0.2,
+  //           ease: "power2.out",
+  //         },
+  //       ).fromTo(
+  //         panelRef.current,
+  //         {
+  //           autoAlpha: 0,
+  //           scale: 0.5,
+  //         },
+  //         {
+  //           autoAlpha: 1,
+  //           scale: 1,
+  //           duration: 0.35,
+  //           ease: "power3.out",
+  //           transformOrigin: "center center",
+  //         },
+  //         "<",
+  //       );
+  //   },
+  //   { scope: modalRef },
+  // );
 
   const closeProductModal = (afterClose?: () => void) => {
     if (isClosingRef.current) return;

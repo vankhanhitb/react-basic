@@ -1,4 +1,3 @@
-import React from 'react';
 import { dataTestimonial } from "../../data/testimonial";
 
 import { A11y, Autoplay } from 'swiper/modules';

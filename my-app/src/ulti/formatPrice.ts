@@ -1,3 +1,4 @@
+// @ts-expect-error This is declera to flexible
 export function formattedPrice (amount){
   const price = typeof(amount) === "string" ? parseInt(amount) : amount;
   return new Number(price).toLocaleString("en-US", {

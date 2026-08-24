@@ -1,6 +1,6 @@
-import { useState, useEffect, type ChangeEvent, } from 'react';
+import { useState, type ChangeEvent, } from 'react';
 import { IoMdSearch } from "react-icons/io";
-import { productsData, type productType } from "../../data/products";
+import { productsData } from "../../data/products";
 import { formattedPrice } from "../../ulti/formatPrice";
 
 export default function Search() {

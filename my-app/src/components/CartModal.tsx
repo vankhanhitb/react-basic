@@ -1,4 +1,3 @@
-import React from 'react';
 import { updateCart, removeItem } from "../features/cart/cartSlice";
 import { closeModal } from "../features/cart/modalSlide";
 import { useDispatch } from "react-redux";

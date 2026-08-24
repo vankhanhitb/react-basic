@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiArrowRight } from "react-icons/fi";
 
 import {
@@ -8,8 +7,7 @@ import {
   Pants,
   Sets,
   Shirts,
-  Sweaters,
-  TShirts
+  Sweaters
 } from "../../assets/collections";
 
 export default function CollectionList() {

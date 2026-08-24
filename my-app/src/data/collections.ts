@@ -1,6 +1,5 @@
 import {
   Accessories,
-  CollectionTabs,
   Outerwear,
   Pants,
   Sets,
